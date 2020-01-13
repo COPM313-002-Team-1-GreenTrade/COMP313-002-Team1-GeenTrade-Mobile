@@ -19,8 +19,6 @@ please make sure you have the following software installed on your computer:
 
             npm start
 
-## Navigations
-The navigation part is completed for now, including the drawer navigaion and bottom navigation.
 
 ## Instructions and Rules
 You can add or work on your screens in the folder called navigations. Making your own screen please follow the rules below.
