@@ -1,0 +1,1 @@
+export const SORT_REWARDS = 'SORT_REWARDS'

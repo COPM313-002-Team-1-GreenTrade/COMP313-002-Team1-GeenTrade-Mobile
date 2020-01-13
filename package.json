@@ -1,0 +1,63 @@
+{
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "eject": "expo eject",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@testing-library/react": "^9.3.2",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.15.1",
+    "eslint-cli": "^1.1.1",
+    "expo": "^34.0.1",
+    "expo-cli": "^3.4.1",
+    "expo-google-app-auth": "^7.0.0",
+    "expo-image-picker": "^7.0.0",
+    "expo-location": "^6.0.0",
+    "expo-module-scripts": "^1.1.1",
+    "firebase": "^7.2.1",
+    "inspector": "^0.5.0",
+    "native-base": "^2.13.8",
+    "react": "16.8.3",
+    "react-dom": "^16.8.6",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-34.0.0.tar.gz",
+    "react-native-credit-card-input": "^0.4.1",
+    "react-native-elements": "^1.2.0",
+    "react-native-gesture-handler": "^1.4.1",
+    "react-native-maps": "^0.26.1",
+    "react-native-material-dropdown": "^0.11.1",
+    "react-native-modal-datetime-picker": "^7.6.0",
+    "react-native-radio-buttons": "^1.0.0",
+    "react-native-reanimated": "^1.3.0",
+    "react-native-responsive-screen": "^1.2.2",
+    "react-native-simple-dialogs": "^1.2.0",
+    "react-native-svg": "^9.13.3",
+    "react-native-vector-icons": "^6.6.0",
+    "react-native-waveview": "^1.1.0",
+    "react-native-web": "^0.11.4",
+    "react-navigation": "^4.0.5",
+    "react-navigation-drawer": "^2.2.1",
+    "react-navigation-stack": "^1.7.3",
+    "react-navigation-tabs": "^2.5.2",
+    "react-redux": "^7.1.1",
+    "redux": "^4.0.4",
+    "redux-thunk": "^2.3.0"
+  },
+  "jest": {
+    "preset": "jest-expo",
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|sentry-expo|native-base)"
+    ],
+    "setupTestFrameworkScriptFile": "./setupTests.js"
+  },
+  "devDependencies": {
+    "babel-preset-expo": "^6.0.0",
+    "jest-expo": "^35.0.0",
+    "react-test-renderer": "^16.12.0"
+  },
+  "private": true
+}
