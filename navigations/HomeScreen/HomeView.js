@@ -297,7 +297,7 @@ export default class HomeView extends Component {
 			}
 		} catch (e) {
 			console.log(e);
-			alert('Upload failed.');
+			//alert('Upload failed.');
 		} finally {
 			this.setState({ uploading: false });
 		}
@@ -307,6 +307,7 @@ export default class HomeView extends Component {
 		try {
 			this.setState({ uploading: true });
 			let encodedContent = await localImageToBase64Encode(image.uri);
+			//console.log(encodedContent)
 			let body = JSON.stringify({
 				requests: [
 					{
@@ -322,9 +323,10 @@ export default class HomeView extends Component {
 				]
 
 			});
+			console.log('******************************************')
+			console.log("body is " + body)
 			let response = await fetch(
-				"https://vision.googleapis.com/v1/images:annotate?key=" +
-				Environment['GOOGLE_CLOUD_VISION_API_KEY'],
+				"https://vision.googleapis.com/v1/images:annotate?key=AIzaSyBJ4v954kAzclBzjxz6BcDgRTzmob1pPvA",
 				{
 					headers: {
 						Accept: 'application/json',
@@ -334,18 +336,21 @@ export default class HomeView extends Component {
 					body: body
 				}
 			);
-			console.log("response is " + response.json())
-			return await response.json();
-			// this.setState({
-			// 	googleResponse: responseJson,
-			// 	uploading: false
-			// });
+			console.log('******************************************')
+			console.log("response is " + JSON.stringify(response))
+			let responseJson = response.json();
+			console.log(responseJson)
+			 this.setState({
+			 	googleResponse: responseJson,
+				uploading: false
+			});
+			return responseJson
 			//var newPoint = this.props.points + this.state.point;
 			//this.props.getPoints(newPoint)
 			//this.setState({isAdded: !this.state.isAdded})
 		} catch (error) {
 			alert("ML API failed to return a response. Please try again.");
-			console.log(error);
+			console.log("error is "+error);
 		}
 	};
 
