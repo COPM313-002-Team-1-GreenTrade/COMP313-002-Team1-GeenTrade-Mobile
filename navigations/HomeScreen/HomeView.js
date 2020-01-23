@@ -137,19 +137,6 @@ export default class HomeView extends Component {
 					<View>
 						{this.state.totalEstimatedPoints / this.state.maxPoints * 100 <= 80 ? (
 							<View style={styles.waveContainer} >
-								{/* <TouchableHighlight onPress={()=>{
-        							// Stop Animation
- 
-        							// set water baseline height
-        							this._waveRect && this._waveRect.setWaterHeight(70);
- 
-        							// reset wave effect
-        							this._waveRect && this._waveRect.setWaveParams([
-           								{A: 10, T: 260, fill: '#FF9F2E'},
-            							{A: 15, T: 220, fill: '#F08200'},
-            							{A: 20, T: 180, fill: '#B36100'},
-        							]);
-    							}}> */}
 								<Wave
 									ref={(wave) => wave && wave.setWaterHeight(this.state.totalEstimatedPoints / this.state.maxPoints * wp('40%'))}
 									style={styles.waveBall}
@@ -162,7 +149,6 @@ export default class HomeView extends Component {
 									animated={true}
 								/>
 								<Text style={styles.perText}>{parseFloat(this.state.totalEstimatedPoints / this.state.maxPoints).toFixed(2) * 100} %</Text>
-								{/* </TouchableHighlight> */}
 							</View>
 						) : <View style={styles.waveContainer} >
 								<Wave
@@ -348,6 +334,7 @@ export default class HomeView extends Component {
 					body: body
 				}
 			);
+			console.log("response is " + response.json())
 			return await response.json();
 			// this.setState({
 			// 	googleResponse: responseJson,
