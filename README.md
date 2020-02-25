@@ -15,7 +15,7 @@ please make sure you have the following software installed on your computer:
 1. Open this project in your VSCode, and Ctrl+ `  to open the terminal
 4. Type in the terminal to install the libraries which are used and run this project
 
-            npm i
+            npm install
 
             npm start
 
