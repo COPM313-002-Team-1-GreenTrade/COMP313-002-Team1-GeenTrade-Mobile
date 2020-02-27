@@ -13,6 +13,9 @@ import PaymentView from "../navigations/PaymentScreen/PaymentView";
 import Scheduling from "../navigations/SchedulePickUp/Scheduling";
 import CollectorView from "../navigations/CollectorML/CollectorView";
 import RecycledItemsHistoryView from "../navigations/RecycledItemsHistoryScreen/RecycledItemsHistoryView";
+import NameEditView from "../navigations/ProfileScreen/NameEditView"
+import EmailEditView from "../navigations/ProfileScreen/EmailEditView"
+import AddressEditView from "../navigations/ProfileScreen/AddressEditView";
 
 const Tabs = createBottomTabNavigator(
   {
@@ -72,6 +75,15 @@ const StackNavigator = createStackNavigator({
   Trade: {
     screen: TradePointView
   },
+  NameEdit: {
+    screen: NameEditView
+  },
+  EmailEdit: {
+    screen: EmailEditView
+  },
+  AddressEdit: {
+    screen: AddressEditView
+  }
 },
 {
   headerMode: "none", //Hide the back button react navigation

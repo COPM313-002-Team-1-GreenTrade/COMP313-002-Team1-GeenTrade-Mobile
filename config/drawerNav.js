@@ -20,6 +20,7 @@ import Scheduling from "../navigations/SchedulePickUp/Scheduling";
 import ContainerView from "../navigations/ContainerScreen/ContainerView";
 import CollectorMapView from "../navigations/CollectMapScreen/CollectorMapView";
 import PaymentView from "../navigations/PaymentScreen/PaymentView";
+import ProfileView from "../navigations/ProfileScreen/ProfileView";
 import RecycledItemsHistoryView from "../navigations/RecycledItemsHistoryScreen/RecycledItemsHistoryView";
 
 
@@ -130,14 +131,14 @@ const DrawerNavigator = createDrawerNavigator(
             },
             params: {role: ['member', 'collector']}
         },
-        // EditProfile: {
-        //     screen: HomeView, navigationOptions: {
-        //         drawerLabel: "Edit Profile",
-        //         drawerIcon: <Icon type="material-community" name="account-box-multiple" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+         EditProfile: {
+             screen: ProfileView, navigationOptions: {
+                 drawerLabel: "Profile",
+                drawerIcon: <Icon type="material-community" name="account-box-multiple" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             
-        //     },
-        //     params: {role: ['member', 'collector']}
-        // },
+             },
+             params: {role: ['member', 'collector']}
+         },
         Pickup: {
             screen: CollectorPickupStack, navigationOptions: {
                 drawerLabel: "Track Pickups",
