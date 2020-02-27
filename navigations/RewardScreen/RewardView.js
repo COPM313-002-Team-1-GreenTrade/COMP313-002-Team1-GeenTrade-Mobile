@@ -65,7 +65,7 @@ _handleIndexChange = index => {
 _renderTabBar = props => {
 
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
          <View style={styles.header}>
          <View style={styles.iconWrapper}>
@@ -100,7 +100,7 @@ _renderTabBar = props => {
         />
         
         </View>
-            </View>
+            </SafeAreaView>
     );
   };
 

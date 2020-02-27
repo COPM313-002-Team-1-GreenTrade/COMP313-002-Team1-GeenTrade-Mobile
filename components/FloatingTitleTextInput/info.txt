@@ -1,0 +1,7 @@
+   This component is for the text input field with floating title,
+which is used in the sign up screen.
+   It has 4 props: 
+   1. attrName -- name for attribute
+   2. title -- title for the field
+   3. value -- the input valu
+   4. updateMasterState -- onTextChange and also upadte the input value
