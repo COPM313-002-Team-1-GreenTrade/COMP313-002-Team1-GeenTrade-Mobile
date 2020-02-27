@@ -7,15 +7,15 @@ YellowBox.ignoreWarnings(['Setting a timer', 'Accessing view manager']);
 // Your web app's Firebase configuration
 const firebaseConfig = {
   staging: {
-  FIREBASE_API_KEY: "AIzaSyDLUAnCa81HkyBlF6Z0xMLhTc55FfAvuEg",
-  FIREBASE_AUTH_DOMAIN: "greantrade.firebaseapp.com",
-  FIREBASE_DATABASE_URL: "https://greantrade.firebaseio.com",
-  FIREBASE_PROJECT_ID: "greantrade",
-  FIREBASE_STORAGE_BUCKET: "gs://greantrade.appspot.com",
-  FIREBASE_MESSAGING_SENDER_ID: "976879369920",
-  APP_ID: "1:976879369920:web:c23dc9dce776c214dd3725",
-  MEASUREMENT_ID: "G-1E62XFZ773",
-  GOOGLE_CLOUD_VISION_API_KEY:'AIzaSyASwOsGYGGBztQmuAIGJLz-Ie_26bYP86I',
+  FIREBASE_API_KEY: "AIzaSyDOtbNG7wrYY_fhJmIxfXPy_421wGeR-iM",
+  FIREBASE_AUTH_DOMAIN: "green-trade-comp313.firebaseapp.com",
+  FIREBASE_DATABASE_URL: "https://green-trade-comp313.firebaseio.com",
+  FIREBASE_PROJECT_ID: "green-trade-comp313",
+  FIREBASE_STORAGE_BUCKET: "green-trade-comp313.appspot.com",
+  FIREBASE_MESSAGING_SENDER_ID: "293966987703",
+  APP_ID: "1:293966987703:web:b071c6520502f44250a832",
+  MEASUREMENT_ID: "G-KVSXZLJ2MS",
+  GOOGLE_CLOUD_VISION_API_KEY:'AIzaSyBJ4v954kAzclBzjxz6BcDgRTzmob1pPvA',
   MAPQUEST_API_KEY: "YAq368R3oaUCCMADnWFIQozWPzlUbgQP",
   },
 

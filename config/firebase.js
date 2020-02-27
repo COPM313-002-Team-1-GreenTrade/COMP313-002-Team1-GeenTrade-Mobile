@@ -10,4 +10,5 @@ firebase.initializeApp({
     messagingSenderId: Environment['FIREBASE_MESSAGING_SENDER_ID'],
     measurementId: Environment['MEASUREMENT_ID']
 });
+//firebase.app().delete();
 export default firebase;

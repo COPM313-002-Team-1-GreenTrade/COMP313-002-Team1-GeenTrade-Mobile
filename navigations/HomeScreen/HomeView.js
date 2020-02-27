@@ -137,19 +137,6 @@ export default class HomeView extends Component {
 					<View>
 						{this.state.totalEstimatedPoints / this.state.maxPoints * 100 <= 80 ? (
 							<View style={styles.waveContainer} >
-								{/* <TouchableHighlight onPress={()=>{
-        							// Stop Animation
- 
-        							// set water baseline height
-        							this._waveRect && this._waveRect.setWaterHeight(70);
- 
-        							// reset wave effect
-        							this._waveRect && this._waveRect.setWaveParams([
-           								{A: 10, T: 260, fill: '#FF9F2E'},
-            							{A: 15, T: 220, fill: '#F08200'},
-            							{A: 20, T: 180, fill: '#B36100'},
-        							]);
-    							}}> */}
 								<Wave
 									ref={(wave) => wave && wave.setWaterHeight(this.state.totalEstimatedPoints / this.state.maxPoints * wp('40%'))}
 									style={styles.waveBall}
@@ -162,7 +149,6 @@ export default class HomeView extends Component {
 									animated={true}
 								/>
 								<Text style={styles.perText}>{parseFloat(this.state.totalEstimatedPoints / this.state.maxPoints).toFixed(2) * 100} %</Text>
-								{/* </TouchableHighlight> */}
 							</View>
 						) : <View style={styles.waveContainer} >
 								<Wave
@@ -311,7 +297,7 @@ export default class HomeView extends Component {
 			}
 		} catch (e) {
 			console.log(e);
-			alert('Upload failed.');
+			//alert('Upload failed.');
 		} finally {
 			this.setState({ uploading: false });
 		}
@@ -321,6 +307,7 @@ export default class HomeView extends Component {
 		try {
 			this.setState({ uploading: true });
 			let encodedContent = await localImageToBase64Encode(image.uri);
+			//console.log(encodedContent)
 			let body = JSON.stringify({
 				requests: [
 					{
@@ -336,9 +323,10 @@ export default class HomeView extends Component {
 				]
 
 			});
+			console.log('******************************************')
+			console.log("body is " + body)
 			let response = await fetch(
-				"https://vision.googleapis.com/v1/images:annotate?key=" +
-				Environment['GOOGLE_CLOUD_VISION_API_KEY'],
+				"https://vision.googleapis.com/v1/images:annotate?key=AIzaSyBJ4v954kAzclBzjxz6BcDgRTzmob1pPvA",
 				{
 					headers: {
 						Accept: 'application/json',
@@ -348,17 +336,21 @@ export default class HomeView extends Component {
 					body: body
 				}
 			);
-			return await response.json();
-			// this.setState({
-			// 	googleResponse: responseJson,
-			// 	uploading: false
-			// });
+			console.log('******************************************')
+			console.log("response is " + JSON.stringify(response))
+			let responseJson = response.json();
+			console.log(responseJson)
+			 this.setState({
+			 	googleResponse: responseJson,
+				uploading: false
+			});
+			return responseJson
 			//var newPoint = this.props.points + this.state.point;
 			//this.props.getPoints(newPoint)
 			//this.setState({isAdded: !this.state.isAdded})
 		} catch (error) {
 			alert("ML API failed to return a response. Please try again.");
-			console.log(error);
+			console.log("error is "+error);
 		}
 	};
 
