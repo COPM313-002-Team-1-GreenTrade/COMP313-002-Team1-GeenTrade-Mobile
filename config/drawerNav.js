@@ -25,6 +25,7 @@ import RecycledItemsHistoryView from "../navigations/RecycledItemsHistoryScreen/
 import NameEditView from "../navigations/ProfileScreen/NameEditView"
 import EmailEditView from "../navigations/ProfileScreen/EmailEditView"
 import AddressEditView from "../navigations/ProfileScreen/AddressEditView";
+import PhoneEditView from "../navigations/ProfileScreen/PhoneEditView";
 import { connect } from 'react-redux';
 import {updateFirstName} from '../actions/Profile/actionCreators';
 import {updateLastName} from '../actions/Profile/actionCreators';
@@ -158,7 +159,8 @@ const ProfileStack = createStackNavigator({
     Profile: ProfileView,
     NameEdit: NameEditView,
     EmailEdit: EmailEditView,
-    AddressEdit: AddressEditView
+    AddressEdit: AddressEditView,
+    PhoneEdit: PhoneEditView
 },
 {
     headerMode: "none",
