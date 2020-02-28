@@ -1,7 +1,7 @@
 import {UPDATE_FIRST_NAME, 
     UPDATE_LAST_NAME,UPDATE_EMAIL, 
     UPDATE_STREET, EXIT_WITHOUT_SAVE, UPDATE_AVATAR,
-    UPDATE_CITY, UPDATE_PROVINCE, UPDATE_POSTALCODE} from "./actionTypes";
+    UPDATE_CITY, UPDATE_PROVINCE, UPDATE_POSTALCODE, UPDATE_PHONE} from "./actionTypes";
 
 const updateFirstName = (firstName: string) => ({
     type: UPDATE_FIRST_NAME,
@@ -47,6 +47,11 @@ const updateAvatar = (avatarUrl: string) => ({
     payload: avatarUrl
 })
 
+const updatePhone = (phone: number) => ({
+    type: UPDATE_PHONE,
+    payload: phone
+});
+
 export {updateFirstName, 
     updateLastName, 
     updateEmail, 
@@ -55,5 +60,6 @@ export {updateFirstName,
     updateAvatar,
     updateCity,
     updateProvince,
-    updatePostalCode
+    updatePostalCode,
+    updatePhone
 }

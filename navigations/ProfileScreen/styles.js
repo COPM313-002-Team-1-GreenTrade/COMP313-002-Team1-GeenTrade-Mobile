@@ -158,4 +158,33 @@ input: {
     borderRadius: 20,
     alignSelf: 'center'
 },
+circle: {
+    width: wp('47%'),
+    height: wp('47%')
+},
+circleContainer: {
+    height: hp('5%'),
+    width: wp('5%'),
+    position: 'absolute', 
+    justifyContent:'center',
+    alignItems: 'center',
+    marginLeft: wp('-10%')
+},
+phoneListContainer: {
+    top: wp("10%"),
+    // height: hp('4%')
+  },
+  phoneList: {
+    borderStyle: "solid",
+    borderBottomColor: "#000000",
+    borderBottomWidth: wp("0.18%"),
+    borderWidth: wp("0.12"),
+    padding: wp("6%"),
+    borderRadius: wp("6%"),
+    alignSelf: 'center',
+    backgroundColor: 'white',
+    width: wp('80%'),
+    shadowColor:"black",
+        shadowOffset:{width:15, height:7},
+  },
 })

@@ -7,6 +7,7 @@ import editAvatarReducer from './Profile/editAvatarReducer';
 import editNameReducer from './Profile/editNameReducer';
 import editEmailReducer from './Profile/editEmailReducer';
 import editAddressReducer from './Profile/editAddressReducer';
+import editPhoneReducer from './Profile/editPhoneReducer';
 
 export default combineReducers({
     sortRewardsReducer,
@@ -17,4 +18,5 @@ export default combineReducers({
     editAvatarReducer,
     editEmailReducer,
     editAddressReducer,
+    editPhoneReducer,
 })

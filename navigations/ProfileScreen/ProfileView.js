@@ -21,6 +21,8 @@ import {updateCity} from '../../actions/Profile/actionCreators';
 import {updateProvince} from '../../actions/Profile/actionCreators';
 import {updatePostalCode} from '../../actions/Profile/actionCreators';
 import {updateAvatar} from '../../actions/Profile/actionCreators';
+import {updatePhone} from '../../actions/Profile/actionCreators';
+import CircleOverlay from '../../components/CircleOverlay'
 
 
 class ProfileView extends Component {
@@ -33,7 +35,7 @@ class ProfileView extends Component {
         city: "",
         province: "",
         postalCode: "",
-        payment: ""
+        phone: ""
     };
   }
 
@@ -41,8 +43,8 @@ class ProfileView extends Component {
     this.props.navigation.navigate("Profile");
   }
 
-  togglePayment = () => {
-    this.props.navigation.navigate("Payment");
+  togglePhoneEdit = () => {
+    this.props.navigation.navigate("PhoneEdit");
   }
 
   toggleNameEdit = () => {
@@ -101,6 +103,11 @@ class ProfileView extends Component {
                         this.props.updatePostalCode("")
                         this.props.updateAvatar(this.state.user.profilePhoto)
                         this.props.updateCity("")
+                    }
+                    if(u.get("phone") != null){
+                      var phone = u.data().phone
+                      this.setState({phone: phone})
+                      this.props.updatePhone(this.state.phone)
                     }
                    
                 }
@@ -164,6 +171,7 @@ class ProfileView extends Component {
         </View>
           
           <View style={styles.avatarContainer}>
+          <CircleOverlay/>
           <TouchableWithoutFeedback onPress={this.chooseAvatar}>
               <Image style={styles.avatar} source={{uri: this.props.avatarUrl}}
               onPress={this.chooseAvatar}/>
@@ -224,16 +232,16 @@ class ProfileView extends Component {
             </ListItem>
             </List>
             <List style={styles.listWrapper}>
-            <ListItem style={styles.itemWrapper} onPress={this.togglePayment} >
+            <ListItem style={styles.itemWrapper} onPress={this.togglePhoneEdit} >
               <Left>
-              <Icon name='payment' type='material' color = "#87D5FA"/>
+              <Icon name='cellphone-iphone' type='material-community' color = "#87D5FA"/>
               </Left>
               <Body style={styles.body}>
-                <Text style={styles.hint}>Payment</Text>
-                {this.state.payment == "" ? (
-                <Text style={styles.hintText}>Add payment method</Text>
+                <Text style={styles.hint}>Phone</Text>
+                {this.state.phone == "" ? (
+                <Text style={styles.hintText}>Add phone number</Text>
               ):
-                <Text style={styles.itemText}>{this.state.street},  {this.state.postalCode}</Text>}
+                <Text style={styles.itemText}>{this.props.phone}</Text>}
               </Body>
               <Right style={styles.right}>
                   <Icon name='edit' type='material'  color="#87D5FA"/>
@@ -254,7 +262,8 @@ function mapStateToProps (state){
       city: state.editAddressReducer.city,
       province: state.editAddressReducer.province,
       postalCode: state.editAddressReducer.postalCode,
-      avatarUrl: state.editAvatarReducer.avatarUrl
+      avatarUrl: state.editAvatarReducer.avatarUrl,
+      phone: state.editPhoneReducer.phone,
   }; 
 }
 
@@ -267,7 +276,8 @@ function mapDispatchToProps (dispatch)  {
       updateCity: (c) => dispatch(updateCity(c)),
       updateProvince: (pro) => dispatch(updateProvince(pro)),
       updatePostalCode: (pos) => dispatch(updatePostalCode(pos)),
-      updateAvatar: (avatar) => dispatch(updateAvatar(avatar))
+      updateAvatar: (avatar) => dispatch(updateAvatar(avatar)),
+      updatePhone: (p) => dispatch(updatePhone(p)),
   };
 }
 
