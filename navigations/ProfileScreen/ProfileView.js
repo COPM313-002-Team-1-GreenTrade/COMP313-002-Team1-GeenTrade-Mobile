@@ -22,7 +22,8 @@ import {updateProvince} from '../../actions/Profile/actionCreators';
 import {updatePostalCode} from '../../actions/Profile/actionCreators';
 import {updateAvatar} from '../../actions/Profile/actionCreators';
 import {updatePhone} from '../../actions/Profile/actionCreators';
-import CircleOverlay from '../../components/CircleOverlay'
+import CircleOverlay from '../../components/CircleOverlay';
+import uuid from 'uuid';
 
 
 class ProfileView extends Component {
@@ -35,7 +36,11 @@ class ProfileView extends Component {
         city: "",
         province: "",
         postalCode: "",
-        phone: ""
+        phone: "",
+        image: null,
+			uploading: false,
+			displayConfirmButton: false,
+			googleResponse: null,
     };
   }
 
@@ -119,6 +124,9 @@ class ProfileView extends Component {
           }
   }
 
+ 
+  
+
   chooseAvatar = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
 
@@ -128,15 +136,17 @@ class ProfileView extends Component {
       });
   
       console.log(result);
-  
+
       if (!result.cancelled) {
-        this.props.updateAvatar(result.uri)
+        // let encodedUri = await localImageToBase64Encode(result.uri);
+        let downloadUrl = await uploadImageAsync(result.uri)
+        this.props.updateAvatar(downloadUrl)
         let db = firebase.firestore();
     let batch = db.batch();
 
     //Ref to user
     let userRef = db.collection('users').doc(firebase.auth().currentUser.uid);
-    batch.update(userRef, { profilePhoto: result.uri});
+    batch.update(userRef, { profilePhoto: downloadUrl});
 
     batch.commit()
       .then((result) => {
@@ -147,6 +157,8 @@ class ProfileView extends Component {
       });
       }
   }
+
+  
 
   render() {
     return (
@@ -238,7 +250,7 @@ class ProfileView extends Component {
               </Left>
               <Body style={styles.body}>
                 <Text style={styles.hint}>Phone</Text>
-                {this.state.phone == "" ? (
+                {this.props.phone == "" ? (
                 <Text style={styles.hintText}>Add phone number</Text>
               ):
                 <Text style={styles.itemText}>{this.props.phone}</Text>}
@@ -279,6 +291,33 @@ function mapDispatchToProps (dispatch)  {
       updateAvatar: (avatar) => dispatch(updateAvatar(avatar)),
       updatePhone: (p) => dispatch(updatePhone(p)),
   };
+}
+
+async function uploadImageAsync(uri) {
+  const blob = await new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+      resolve(xhr.response);
+    };
+    xhr.onerror = function (e) {
+      console.log(e);
+      reject(new TypeError('Network request failed'));
+    };
+    xhr.responseType = 'blob';
+    xhr.open('GET', uri, true);
+    xhr.send(null);
+  });
+
+  const ref = firebase
+    .storage()
+    .ref()
+    .child(uuid.v4());
+
+  const snapshot = await ref.put(blob);
+
+  blob.close();
+
+  return await ref.getDownloadURL();
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfileView);
