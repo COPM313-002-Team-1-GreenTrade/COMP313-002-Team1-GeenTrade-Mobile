@@ -126,7 +126,6 @@ class ProfileView extends Component {
 
     batch.commit()
       .then((result) => {
-        this.props.navigation.goBack(null)
       })
       .catch((error) => {
         Alert.alert('Error', 'Something went wrong. Please try again later.');
@@ -161,11 +160,11 @@ class ProfileView extends Component {
           <TouchableWithoutFeedback onPress={this.chooseAvatar}>
               <Image style={styles.avatar} source={{uri: this.props.avatarUrl}}
               onPress={this.chooseAvatar}/>
-              <Icon 
+              {/* <Icon 
               name='add-a-photo' 
               type='material'
               iconStyle ={styles.addPhoto}
-              />
+              /> */}
                </TouchableWithoutFeedback>
           </View>
          
