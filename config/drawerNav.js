@@ -46,11 +46,11 @@ class DrawerComponent extends Component {
             user.get().then(u => {
               if (u.exists) {
                  this.setState({user: u.data()});
-                 this.props.updateFirstName(this.state.user.firstName)
-                 this.props.updateLastName(this.state.user.lastName)
-                 this.props.updateEmail(this.state.user.email)
-                 this.props.updateAvatar(this.state.user.profilePhoto)
-                 //console.log(this.state);
+                //  this.props.updateFirstName(this.state.user.firstName)
+                //  this.props.updateLastName(this.state.user.lastName)
+                //  this.props.updateEmail(this.state.user.email)
+                //  this.props.updateAvatar(this.state.user.profilePhoto)
+                //  console.log(this.props.lastName);
                 }
             });
         }
@@ -100,11 +100,11 @@ class DrawerComponent extends Component {
             <SafeAreaView style={styles.menuContainer}>
                 <View style={styles.profileContainer}>
                     <Image
-                        source={{ uri: this.props.avatarUrl}}
+                        source={{ uri: this.state.user.profilePhoto}}
                         style={styles.profileImg}
                     />
-                    <Text style={styles.nameTxt}>{this.props.firstName} {this.props.lastName}</Text>
-                    <Text style={styles.emailTxt}>{this.props.email}</Text>
+                    <Text style={styles.nameTxt}>{this.state.user.firstName} {this.state.user.lastName}</Text>
+                    <Text style={styles.emailTxt}>{this.state.user.email}</Text>
                 </View>
                 <View style={styles.safeView}>
                     <View style={styles.DrawerComponentScrollView}>
@@ -117,6 +117,26 @@ class DrawerComponent extends Component {
         );
     }
 }
+
+// function mapStateToProps (state){
+//     return{
+//         firstName: state.editNameReducer.firstName,
+//         lastName: state.editNameReducer.lastName,
+//         email: state.editEmailReducer.email,
+//         avatarUrl: state.editAvatarReducer.avatarUrl
+//     }; 
+//   }
+
+//   function mapDispatchToProps (dispatch)  {
+//     return {
+//         updateFirstName: (f) => dispatch(updateFirstName(f)),
+//         updateLastName: (l) => dispatch(updateLastName(l)),
+//         updateEmail: (e) => dispatch(updateEmail(e)),
+//         updateAvatar: (avatar) => dispatch(updateAvatar(avatar)),
+//     };
+//   }
+
+// connect(mapStateToProps, mapDispatchToProps)(DrawerComponent)
 
 const CollectorPickupStack = createStackNavigator({
     CollectorPickup: CollectorPickupView,
@@ -198,41 +218,7 @@ const DrawerNavigator = createDrawerNavigator(
             },
             params:  {role: ['member', 'collector']}
         },
-        // Initial: {
-        //     screen: InitialView, navigationOptions: {
-        //         drawerLabel: "Initial Test",
-        //         drawerIcon: <Icon type="material-community" name="car" color="#1F9AFC" iconStyle={styles.menuIcon}/>
-        //     },
-        //     params:  {role: ['member', 'collector']}
-        // },
-        // Notifications: {
-        //     screen: HomeView, navigationOptions: {
-        //         drawerLabel: "Notifications",
-        //         drawerIcon: <Icon type="material-community" name="bell" color="#1F9AFC" iconStyle={styles.menuIcon}/>
-        //     },
-        //     params: {role: ['member', 'collector']}
-        // },
-        // InviteFriends: {
-        //     screen: HomeView, navigationOptions: {
-        //         drawerLabel: "Invite Friends",
-        //         drawerIcon: <Icon type="material-community" name="account-plus" color="#1F9AFC" iconStyle={styles.menuIcon}/>
-        //     },
-        //     params: {role: ['member', 'collector']}
-        // },
-        // Settings: {
-        //     screen: HomeView, navigationOptions: {
-        //         drawerLabel: "Settings",
-        //         drawerIcon: <Icon type="font-awesome" name="cog" color="#1F9AFC" iconStyle={styles.menuIcon}/>
-        //     },
-        //     params: {role: ['member', 'collector']}
-        // },
-        // Help: {
-        //     screen: HomeView, navigationOptions: {
-        //         drawerLabel: "Help",
-        //         drawerIcon: <Icon type="font-awesome" name="question-circle" color="#1F9AFC" iconStyle={styles.menuIcon}/>
-        //     },
-        //     params: {role: ['*']}
-        // },
+
         LogOut: {
             screen: HomeView, navigationOptions: {
                 drawerLabel: "Log Out",
@@ -260,25 +246,7 @@ const AuthStack = createStackNavigator({
     SignUp: SignUpView
 });
 
-function mapStateToProps (state){
-    return{
-        firstName: state.editNameReducer.firstName,
-        lastName: state.editNameReducer.lastName,
-        email: state.editEmailReducer.email,
-        avatarUrl: state.editAvatarReducer.avatarUrl
-    }; 
-  }
-  
-  function mapDispatchToProps (dispatch)  {
-    return {
-        updateFirstName: (f) => dispatch(updateFirstName(f)),
-        updateLastName: (l) => dispatch(updateLastName(l)),
-        updateEmail: (e) => dispatch(updateEmail(e)),
-        updateAvatar: (avatar) => dispatch(updateAvatar(avatar))
-    };
-  }
-
-export default connect(mapStateToProps, mapDispatchToProps)(createAppContainer(createSwitchNavigator(
+export default createAppContainer(createSwitchNavigator(
   {
     Splash: SplashView,
     Auth: AuthStack,
@@ -287,4 +255,4 @@ export default connect(mapStateToProps, mapDispatchToProps)(createAppContainer(c
   {
     initialRouteName: 'Splash'
   }
-)));
+));

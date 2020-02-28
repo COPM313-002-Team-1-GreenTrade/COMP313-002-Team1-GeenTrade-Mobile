@@ -27,11 +27,16 @@ import { Dialog } from 'react-native-simple-dialogs';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import * as FileSystem from 'expo-file-system';
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { connect } from 'react-redux';
+import {updateFirstName} from '../../actions/Profile/actionCreators';
+import {updateLastName} from '../../actions/Profile/actionCreators';
+import {updateEmail} from '../../actions/Profile/actionCreators';
+import {updateAvatar} from '../../actions/Profile/actionCreators';
 
 const db = firebase.firestore();
 
 
-export default class HomeView extends Component {
+class HomeView extends Component {
 	PLASTIC_POINTS = 50;
 	METAL_POINTS = 85;
 
@@ -75,6 +80,11 @@ export default class HomeView extends Component {
 			.then(u => {
 				if (u.exists) {
 					this.setState({ user: u.data() });
+				this.props.updateFirstName(this.state.user.firstName)
+                 this.props.updateLastName(this.state.user.lastName)
+                 this.props.updateEmail(this.state.user.email)
+				 this.props.updateAvatar(this.state.user.profilePhoto)
+				 console.log(this.props.firstName)
 				}
 			});
 		this.getUserEstimatedPoints();
@@ -485,3 +495,23 @@ async function uploadImageAsync(uri) {
 
 	return await ref.getDownloadURL();
 }
+
+function mapStateToProps (state){
+    return{
+        firstName: state.editNameReducer.firstName,
+        lastName: state.editNameReducer.lastName,
+        email: state.editEmailReducer.email,
+        avatarUrl: state.editAvatarReducer.avatarUrl
+    }; 
+  }
+  
+  function mapDispatchToProps (dispatch)  {
+    return {
+        updateFirstName: (f) => dispatch(updateFirstName(f)),
+        updateLastName: (l) => dispatch(updateLastName(l)),
+        updateEmail: (e) => dispatch(updateEmail(e)),
+        updateAvatar: (avatar) => dispatch(updateAvatar(avatar))
+    };
+  }
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeView);
