@@ -7,6 +7,7 @@ import {
     heightPercentageToDP as hp
   } from "react-native-responsive-screen";
   import SafeAreaView from "react-native-safe-area-view";
+  import firebase from '../../config/firebase';
 import { FloatingTitleTextInputField } from '../../components/FloatingTitleTextInput/FloatingTitleTextInputField';
 import * as Animatable from 'react-native-animatable';
 import { connect } from 'react-redux';
@@ -25,17 +26,33 @@ class NameEditView extends Component {
   }
 
   async componentDidMount() {
+    console.log(this.props.email)
 }
 
 toggleBack =() => {
-  this.props.navigation.navigate('EditProfile');
+  this.props.navigation.goBack(null)
   this.props.exitWithoutSave
 }
 
-saveChange = () => {
+saveChange = (first, last) => {
+    this.props.updateFirstName;
+    this.props.updateLastName;
+    let db = firebase.firestore();
+    let batch = db.batch();
 
-  this.props.navigation.navigate('EditProfile')
-}
+    //Ref to user
+    let userRef = db.collection('users').doc(firebase.auth().currentUser.uid);
+    batch.update(userRef, { firstName: first, lastName: last });
+
+    batch.commit()
+      .then((result) => {
+        this.props.navigation.goBack(null)
+      })
+      .catch((error) => {
+        Alert.alert('Error', 'Something went wrong. Please try again later.');
+        console.log(error);
+      });
+  }
 
 
   render() {
@@ -83,7 +100,7 @@ onPress={Keyboard.dismiss}>
         </View>
         </Animatable.View>
         <Animatable.View style={styles.btnContainer} animation="slideInUp">
-            <TouchableWithoutFeedback  onPress={this.saveChange}>
+            <TouchableWithoutFeedback  onPress={() =>this.saveChange(this.props.firstName, this.props.lastName)}>
               <View style={styles.btn}>
               <Text style={styles.btnText}>SAVE    CHANGE</Text>
               </View>

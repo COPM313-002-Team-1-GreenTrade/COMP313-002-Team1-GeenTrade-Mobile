@@ -7,6 +7,7 @@ import {
     heightPercentageToDP as hp
   } from "react-native-responsive-screen";
   import SafeAreaView from "react-native-safe-area-view";
+  import firebase from '../../config/firebase';
 import { FloatingTitleTextInputField } from '../../components/FloatingTitleTextInput/FloatingTitleTextInputField';
 import * as Animatable from 'react-native-animatable';
 import { connect } from 'react-redux';
@@ -30,14 +31,40 @@ class AddressEditView extends Component {
 }
 
 toggleBack =() => {
-  this.props.navigation.navigate('EditProfile');
-  this.props.exitWithoutSave
-}
+    this.props.navigation.goBack(null)
+    this.props.exitWithoutSave
+  }
 
-saveChange = () => {
+  saveChange = (street, city, province, postalCode) => {
+    this.props.updateStreet;
+    this.props.updateCity;
+    this.props.updateProvince;
+    this.props.updatePostalCode;
+    let db = firebase.firestore();
+    let batch = db.batch();
 
-  this.props.navigation.navigate('EditProfile')
-}
+    //Ref to user
+    let userRef = db.collection('users').doc(firebase.auth().currentUser.uid);
+    const addressData = []
+    var address = {
+        street: this.props.street,
+        city: this.props.city,
+        province: this.props.province,
+        postalCode: this.props.postalCode
+    }
+    addressData.push(address)
+    batch.update(userRef, { 
+        address: address });
+
+    batch.commit()
+      .then((result) => {
+        this.props.navigation.goBack(null)
+      })
+      .catch((error) => {
+        Alert.alert('Error', 'Something went wrong. Please try again later.');
+        console.log(error);
+      });
+  }
 
 
   render() {

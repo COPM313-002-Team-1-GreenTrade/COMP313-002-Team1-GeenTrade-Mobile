@@ -20,7 +20,7 @@ import {updateStreet} from '../../actions/Profile/actionCreators';
 import {updateCity} from '../../actions/Profile/actionCreators';
 import {updateProvince} from '../../actions/Profile/actionCreators';
 import {updatePostalCode} from '../../actions/Profile/actionCreators';
-
+import {updateAvatar} from '../../actions/Profile/actionCreators';
 
 
 class ProfileView extends Component {
@@ -43,10 +43,6 @@ class ProfileView extends Component {
 
   togglePayment = () => {
     this.props.navigation.navigate("Payment");
-  }
-
-  toggleBack = () => {
-      this.props.navigation.navigate("Setting");
   }
 
   toggleNameEdit = () => {
@@ -76,8 +72,7 @@ class ProfileView extends Component {
                     this.props.updateFirstName(this.state.user.firstName)
                     this.props.updateLastName(this.state.user.lastName)
                     this.props.updateEmail(this.state.user.email)
-                    //console.log(this.state.user.email)
-                    //console.log(this.props.email)
+
                     if(u.get("address") != null){
                         var address = {
                             street: u.data().address.street,
@@ -95,7 +90,7 @@ class ProfileView extends Component {
                         this.props.updateStreet(this.state.street)
                         this.props.updateProvince(this.state.province)
                         this.props.updatePostalCode(this.state.postalCode)
-                        //this.props.updateAvatar(this.state.user.profilePhoto)
+                        this.props.updateAvatar(this.state.user.profilePhoto)
                         this.props.updateCity(this.state.city)
                         console.log(this.state.city)
 
@@ -122,6 +117,21 @@ class ProfileView extends Component {
   
       if (!result.cancelled) {
         this.props.updateAvatar(result.uri)
+        let db = firebase.firestore();
+    let batch = db.batch();
+
+    //Ref to user
+    let userRef = db.collection('users').doc(firebase.auth().currentUser.uid);
+    batch.update(userRef, { profilePhoto: result.uri});
+
+    batch.commit()
+      .then((result) => {
+        this.props.navigation.goBack(null)
+      })
+      .catch((error) => {
+        Alert.alert('Error', 'Something went wrong. Please try again later.');
+        console.log(error);
+      });
       }
   }
 
@@ -149,7 +159,7 @@ class ProfileView extends Component {
           
           <View style={styles.avatarContainer}>
           <TouchableWithoutFeedback onPress={this.chooseAvatar}>
-              <Image style={styles.avatar} source={{uri: this.state.user.profilePhoto}}
+              <Image style={styles.avatar} source={{uri: this.props.avatarUrl}}
               onPress={this.chooseAvatar}/>
               <Icon 
               name='add-a-photo' 
@@ -167,7 +177,7 @@ class ProfileView extends Component {
               </Left>
               <Body style={styles.body}>
                 <Text style={styles.hint}>Name</Text>
-                <Text style={styles.itemText}>{this.state.user.displayName}</Text>
+                <Text style={styles.itemText}>{this.props.firstName} {this.props.lastName}</Text>
               </Body>
               <Right style={styles.right}>
                   <Icon name='edit' type='material'  color="#87D5FA" />
@@ -182,7 +192,7 @@ class ProfileView extends Component {
               </Left>
               <Body style={styles.body}>
               <Text style={styles.hint}>Email</Text>
-                <Text style={styles.itemText}>{this.state.user.email}</Text>
+                <Text style={styles.itemText}>{this.props.email}</Text>
               </Body>
               <Right style={styles.right}>
                   <Icon name='edit' type='material'  color="#87D5FA"/>
@@ -200,7 +210,7 @@ class ProfileView extends Component {
               {this.state.street == "" ? (
                 <Text style={styles.hintText}>Add address to complete profile</Text>
               ):
-                <Text style={styles.itemText}>{this.state.street},  {this.state.postalCode}</Text>}
+                <Text style={styles.itemText}>{this.props.street},  {this.props.postalCode}</Text>}
               </Body>
               <Right style={styles.right}>
                   <Icon name='edit' type='material'  color="#87D5FA"/>
