@@ -1,5 +1,5 @@
 # GreenTrade
-This is the front-end work for GreenTrade app 
+This is the mobile-end work for GreenTrade app 
 
 ## Prerequisites 
 please make sure you have the following software installed on your computer:
