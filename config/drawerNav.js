@@ -25,6 +25,11 @@ import RecycledItemsHistoryView from "../navigations/RecycledItemsHistoryScreen/
 import NameEditView from "../navigations/ProfileScreen/NameEditView"
 import EmailEditView from "../navigations/ProfileScreen/EmailEditView"
 import AddressEditView from "../navigations/ProfileScreen/AddressEditView";
+import { connect } from 'react-redux';
+import {updateFirstName} from '../actions/Profile/actionCreators';
+import {updateLastName} from '../actions/Profile/actionCreators';
+import {updateEmail} from '../actions/Profile/actionCreators';
+import {updateAvatar} from '../actions/Profile/actionCreators';
 
 
 class DrawerComponent extends Component {
@@ -41,6 +46,10 @@ class DrawerComponent extends Component {
             user.get().then(u => {
               if (u.exists) {
                  this.setState({user: u.data()});
+                 this.props.updateFirstName(this.state.user.firstName)
+                 this.props.updateLastName(this.state.user.lastName)
+                 this.props.updateEmail(this.state.user.email)
+                 this.props.updateAvatar(this.state.user.profilePhoto)
                  //console.log(this.state);
                 }
             });
@@ -91,11 +100,11 @@ class DrawerComponent extends Component {
             <SafeAreaView style={styles.menuContainer}>
                 <View style={styles.profileContainer}>
                     <Image
-                        source={{ uri: firebase.auth().currentUser && firebase.auth().currentUser.providerData[0].photoURL ? firebase.auth().currentUser.providerData[0].photoURL : 'https://us.123rf.com/450wm/gmast3r/gmast3r1909/gmast3r190900039/129397458-man-wearing-protective-face-mask-with-human-putting-rubbish-into-trash-bin-environment-protection-re.jpg?ver=6' }}
+                        source={{ uri: this.props.avatarUrl}}
                         style={styles.profileImg}
                     />
-                    <Text style={styles.nameTxt}>{this.state.user.displayName}</Text>
-                    <Text style={styles.emailTxt}>{this.state.user.email}</Text>
+                    <Text style={styles.nameTxt}>{this.props.firstName} {this.props.lastName}</Text>
+                    <Text style={styles.emailTxt}>{this.props.email}</Text>
                 </View>
                 <View style={styles.safeView}>
                     <View style={styles.DrawerComponentScrollView}>
@@ -251,7 +260,25 @@ const AuthStack = createStackNavigator({
     SignUp: SignUpView
 });
 
-export default createAppContainer(createSwitchNavigator(
+function mapStateToProps (state){
+    return{
+        firstName: state.editNameReducer.firstName,
+        lastName: state.editNameReducer.lastName,
+        email: state.editEmailReducer.email,
+        avatarUrl: state.editAvatarReducer.avatarUrl
+    }; 
+  }
+  
+  function mapDispatchToProps (dispatch)  {
+    return {
+        updateFirstName: (f) => dispatch(updateFirstName(f)),
+        updateLastName: (l) => dispatch(updateLastName(l)),
+        updateEmail: (e) => dispatch(updateEmail(e)),
+        updateAvatar: (avatar) => dispatch(updateAvatar(avatar))
+    };
+  }
+
+export default connect(mapStateToProps, mapDispatchToProps)(createAppContainer(createSwitchNavigator(
   {
     Splash: SplashView,
     Auth: AuthStack,
@@ -260,4 +287,4 @@ export default createAppContainer(createSwitchNavigator(
   {
     initialRouteName: 'Splash'
   }
-));
+)));
