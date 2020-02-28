@@ -79,13 +79,16 @@ export default class RecycledItemsHistoryView extends Component {
       containerStyle={styles.cardContainer}
       //title={item.address.street}
       image={{ uri: item.imageUri }}
+      imageStyle={styles.imgCard}
       placeholder={<ActivityIndicator size="large" color="#00ff00" />}
+      wrapperStyle={styles.wrapper}
       >
       <ListItem
-        containerStyle={styles.cardContainer}
+        containerStyle={styles.listContainer}
         title={`Estimated Points: ${item.estimatedPoints}`}
         subtitle={`Collected: ${item.collected ? 'Yes' : 'No'}`}
         rightSubtitle={moment(item.createdAt.toDate()).format('MMM Do, h:mm a')}
+        rightSubtitleStyle={styles.rightTitle}
       />
     </Card>
   );

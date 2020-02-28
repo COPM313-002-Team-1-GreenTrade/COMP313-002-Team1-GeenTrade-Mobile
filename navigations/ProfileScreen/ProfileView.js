@@ -95,6 +95,13 @@ class ProfileView extends Component {
                         console.log(this.state.city)
 
                     }
+                    else{
+                      this.props.updateStreet("")
+                        this.props.updateProvince("")
+                        this.props.updatePostalCode("")
+                        this.props.updateAvatar(this.state.user.profilePhoto)
+                        this.props.updateCity("")
+                    }
                    
                 }
                 
@@ -206,7 +213,7 @@ class ProfileView extends Component {
               </Left>
               <Body style={styles.body}>
               <Text style={styles.hint}>Address</Text>
-              {this.state.street == "" ? (
+              {this.props.street == "" ? (
                 <Text style={styles.hintText}>Add address to complete profile</Text>
               ):
                 <Text style={styles.itemText}>{this.props.street},  {this.props.postalCode}</Text>}

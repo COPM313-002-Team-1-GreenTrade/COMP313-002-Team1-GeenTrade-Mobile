@@ -200,4 +200,19 @@ export default StyleSheet.create({
      cardContainer: {
         backgroundColor: '#87D5FA',
     },
+    rightTitle: {
+        width: wp('35%'),
+        marginRight: wp('-10%')
+    },
+    imgCard: {
+        height: wp('50%')
+    },
+    wrapper: {
+        height: wp("65%")
+    },
+    listContainer: {
+        height: wp("12%"),
+        width: wp("80%"),
+        backgroundColor: '#87D5FA',
+    }
 });

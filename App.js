@@ -8,7 +8,8 @@ import thunkMiddleware from 'redux-thunk';
 
 const store = createStore(combineReducers, applyMiddleware(thunkMiddleware));
 
-export default class App extends React.Component<{}>{
+export default class App extends React.Component{
+  
   render(){
     return (
     <Provider store={store}>
