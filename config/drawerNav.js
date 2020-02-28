@@ -22,6 +22,9 @@ import CollectorMapView from "../navigations/CollectMapScreen/CollectorMapView";
 import PaymentView from "../navigations/PaymentScreen/PaymentView";
 import ProfileView from "../navigations/ProfileScreen/ProfileView";
 import RecycledItemsHistoryView from "../navigations/RecycledItemsHistoryScreen/RecycledItemsHistoryView";
+import NameEditView from "../navigations/ProfileScreen/NameEditView"
+import EmailEditView from "../navigations/ProfileScreen/EmailEditView"
+import AddressEditView from "../navigations/ProfileScreen/AddressEditView";
 
 
 class DrawerComponent extends Component {
@@ -122,6 +125,17 @@ const ContainerPurchaseStack = createStackNavigator({
     headerMode: "none", //Hide the back button react navigation
 });
 
+const ProfileStack = createStackNavigator({
+    Profile: ProfileView,
+    NameEdit: NameEditView,
+    EmailEdit: EmailEditView,
+    AddressEdit: AddressEditView
+},
+{
+    headerMode: "none",
+    initialRouteName: 'Profile'},
+)
+
 const DrawerNavigator = createDrawerNavigator(
     {
         Home: {
@@ -132,7 +146,7 @@ const DrawerNavigator = createDrawerNavigator(
             params: {role: ['member', 'collector']}
         },
          EditProfile: {
-             screen: ProfileView, navigationOptions: {
+             screen: ProfileStack, navigationOptions: {
                  drawerLabel: "Profile",
                 drawerIcon: <Icon type="material-community" name="account-box-multiple" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             
