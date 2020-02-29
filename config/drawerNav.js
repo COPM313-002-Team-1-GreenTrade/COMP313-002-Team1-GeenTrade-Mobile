@@ -16,6 +16,7 @@ import SignInView from "../navigations/SignInScreen/SignInView";
 import SignUpView from "../navigations/SignUpScreen/SignUpView";
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
 import CollectorPickupHistory from "../navigations/CollectorPickupHistory/CollectorPickupHistoryView";
+import LiveChatView from "../navigations/LiveChat/chat.test";
 import Scheduling from "../navigations/SchedulePickUp/Scheduling";
 import ContainerView from "../navigations/ContainerScreen/ContainerView";
 import CollectorMapView from "../navigations/CollectMapScreen/CollectorMapView";
@@ -155,6 +156,13 @@ const ContainerPurchaseStack = createStackNavigator({
     headerMode: "none", //Hide the back button react navigation
 });
 
+const LivechatStack = createStackNavigator({
+    LiveChat: LiveChatView,
+},
+{
+    headerMode: "none",
+});
+
 const ProfileStack = createStackNavigator({
     Profile: ProfileView,
     NameEdit: NameEditView,
@@ -191,6 +199,14 @@ const DrawerNavigator = createDrawerNavigator(
             },
             params: {role: ['collector']}
         },
+
+        LiveChatforCS: {
+            screen: LivechatStack,navigationOptions: {
+                drawerLabel: "LiveChat",
+                drawerIcon: <Icon type="material-community" name="chat-processing-outline" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+       
+            },  params: {role: ['member', 'collector']}
+        },
         
         CollectorPickupHistory: {
             screen: CollectorPickupHistory, navigationOptions: {
@@ -220,7 +236,6 @@ const DrawerNavigator = createDrawerNavigator(
             },
             params:  {role: ['member', 'collector']}
         },
-
         LogOut: {
             screen: HomeView, navigationOptions: {
                 drawerLabel: "Log Out",
