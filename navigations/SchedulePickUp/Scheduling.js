@@ -13,13 +13,18 @@ const db = firebase.firestore();
 export default class Scheduling extends Component {
   constructor(props) {
     super(props);
-    // 10 days
-    const maxDateOffsetinMilli = 10 * 24 * 60 * 60 * 1000;
+    // 5 days
+    // const maxDateOffsetinMilli = 5 * 24 * 60 * 60 * 1000;
+    const maxDateOffsetinMilli = 5 * 24 * 60 * 60 * 1000;
     this.state = {
       userDisplayName: '',
+      // date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
       date: new Date(),
+      // minimumDate: new Date(Date.now()),
+      // maxDate: new Date(Date.now()),
+      minimumDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
       maxDate: new Date(Date.now() + maxDateOffsetinMilli),
-      message: "Lets Schedule It",
+      message: "Let's Schedule It",
       user: '',
       isVisible: false,
       dateTimestamp: null,
@@ -279,7 +284,7 @@ export default class Scheduling extends Component {
       // await Promise.all ( [pickupRef.add({ user: realUser, address: this.state.address, userProfilePicURL: this.state.userprofilePicUrl, scheduledtime: this.state.chosenDate , additionalInfo: this.state.additionalInfo,cancelled: false, collectorid: this.state.collectPersonId , collector: this.state.collectorperson ,customerName: userName, fulfilledAt: null})],
       //   [userRef.add({ scheduledtime: this.state.chosenDate, additionalInfo: this.state.additionalInfo, pickupby: this.state.collectorperson ,fulfilledtime: null})]);
 
-      //await userRef.add({ scheduledtime: this.state.chosenDate, additionalInfo: this.state.additionalInfo, pickupby: this.state.collectorperson ,fulfilledtime: null}); 
+      // await userRef.add({ scheduledtime: this.state.chosenDate, additionalInfo: this.state.additionalInfo, pickupby: this.state.collectorperson ,fulfilledtime: null}); 
       Alert.alert('Scheduling successful!', `Thank you ${this.state.userDisplayName}!\nWe will pick up your recycling on ${this.state.chosenDate}.`);
       this.props.navigation.goBack(null);
     }
@@ -319,10 +324,9 @@ export default class Scheduling extends Component {
               isVisible={this.state.isVisible}
               onConfirm={this.handlePicker}
               onCancel={this.hidePicker}
-              minimumDate={this.state.date}
+              minimumDate={this.state.minimumDate}
               maximumDate={this.state.maxDate}
               mode={"datetime"}
-
             />
             <Text style={{ color: 'red', fontSize: 20 }}>{this.state.chosenDate}</Text>
             <TextInput
