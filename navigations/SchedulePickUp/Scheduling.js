@@ -13,12 +13,11 @@ const db = firebase.firestore();
 export default class Scheduling extends Component {
   constructor(props) {
     super(props);
-    // 5 days
-    const maxDateOffsetinMilli = 5 * 24 * 60 * 60 * 1000;
+    // 10 days
+    const maxDateOffsetinMilli = 10 * 24 * 60 * 60 * 1000;
     this.state = {
       userDisplayName: '',
       date: new Date(),
-      minimumDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
       maxDate: new Date(Date.now() + maxDateOffsetinMilli),
       message: "Lets Schedule It",
       user: '',
