@@ -9,7 +9,7 @@ import firebase from '../../config/firebase';
 import SlideListItem, { Separator } from "./SlideListItem";
 import uuid from 'uuid';
 
-export default class CollectorPickupView extends Component {
+export default class CustomerPendingPickupsView extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -34,6 +34,7 @@ export default class CollectorPickupView extends Component {
         .where("memberId", "==", firebase.auth().currentUser.uid)
         .where("fulfilledTime", "==", null)
         .where("cancelled", "==", false)
+        .where("collectorId", "==", null)
         .get().then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
             var pickupInfo = {

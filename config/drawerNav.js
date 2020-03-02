@@ -15,6 +15,7 @@ import SplashView from "../navigations/SplashScreen/SplashView";
 import SignInView from "../navigations/SignInScreen/SignInView";
 import SignUpView from "../navigations/SignUpScreen/SignUpView";
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
+import CollectorPickupSelectionView from "../navigations/CollectorPickupSelection/CollectorPickupSelectionView";
 import CollectorPickupHistory from "../navigations/CollectorPickupHistory/CollectorPickupHistoryView";
 import CustomerPendingPickupsView from "../navigations/CustomerPendingPickups/CustomerPendingPickupsView";
 import LiveChatView from "../navigations/LiveChat/FormForCS";
@@ -143,6 +144,13 @@ class DrawerComponent extends Component {
 
 // connect(mapStateToProps, mapDispatchToProps)(DrawerComponent)
 
+const CollectorPickupSelectionStack = createStackNavigator({
+    CollectorPickupSelection: CollectorPickupSelectionView
+},
+{
+    headerMode: "none", 
+})
+
 const CollectorPickupStack = createStackNavigator({
     CollectorPickup: CollectorPickupView,
     CollectorMap: CollectorMapView,
@@ -210,7 +218,14 @@ const DrawerNavigator = createDrawerNavigator(
             
              },
              params: {role: ['member', 'collector']}
-         },
+         },        
+         PickupSelection: {
+            screen: CollectorPickupSelectionStack, navigationOptions: {
+                drawerLabel: "Select Pickup",
+                drawerIcon: <Icon type="material-community" name="cellphone" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+            },
+            params: {role: ['collector']}
+        },
         Pickup: {
             screen: CollectorPickupStack, navigationOptions: {
                 drawerLabel: "Track Pickups",
@@ -246,9 +261,9 @@ const DrawerNavigator = createDrawerNavigator(
                 drawerLabel: "Schedule Pickup",
                 drawerIcon: <Icon type="material-community" name="car" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
-            params:  {role: ['member', 'collector']}
+            params:  {role: ['member']}
+            // params:  {role: ['member', 'collector']}
         },
-
 
         LiveChatforCS: {
             screen: LivechatStack,navigationOptions: {
