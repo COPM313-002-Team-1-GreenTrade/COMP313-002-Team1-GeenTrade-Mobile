@@ -18,6 +18,7 @@ import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/co
 import CollectorPickupSelectionView from "../navigations/CollectorPickupSelection/CollectorPickupSelectionView";
 import CollectorPickupHistory from "../navigations/CollectorPickupHistory/CollectorPickupHistoryView";
 import CustomerPendingPickupsView from "../navigations/CustomerPendingPickups/CustomerPendingPickupsView";
+import CustomerConfirmedPickupsView from "../navigations/CustomerConfirmedPickups/CustomerConfirmedPickupsView";
 import LiveChatView from "../navigations/LiveChat/FormForCS";
 import Scheduling from "../navigations/SchedulePickUp/Scheduling";
 import ContainerView from "../navigations/ContainerScreen/ContainerView";
@@ -143,6 +144,18 @@ class DrawerComponent extends Component {
 //   }
 
 // connect(mapStateToProps, mapDispatchToProps)(DrawerComponent)
+const CustomerPendingPickupsStack = createStackNavigator({
+    CustomerPickUp: CustomerPendingPickupsView
+},
+{
+    headerMode: "none"
+})
+const CustomerConfirmedPickupsStack = createStackNavigator({
+    CustomerPickUp: CustomerConfirmedPickupsView
+},
+{
+    headerMode: "none"
+})
 
 const CollectorPickupSelectionStack = createStackNavigator({
     CollectorPickupSelection: CollectorPickupSelectionView
@@ -194,13 +207,6 @@ const WorkScheduleStack = createStackNavigator({
     headerMode: "none",
     initialRouteName: 'WorkSchedule'},
 )
-
-const CustomerPendingPickupsStack = createStackNavigator({
-    CustomerPickUp: CustomerPendingPickupsView
-},
-{
-    headerMode: "none"
-})
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -264,6 +270,20 @@ const DrawerNavigator = createDrawerNavigator(
             params:  {role: ['member']}
             // params:  {role: ['member', 'collector']}
         },
+        CustomerPendingPickups: {
+            screen: CustomerPendingPickupsStack, navigationOptions: {
+                drawerLabel: "Pending Pickups",
+                drawerIcon: <Icon type="material-community" name="car" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+            },
+            params:  {role: ['member']}
+        },
+        CustomerConfirmedPickups: {
+            screen: CustomerConfirmedPickupsStack, navigationOptions: {
+                drawerLabel: "Confirmed Pickups",
+                drawerIcon: <Icon type="material-community" name="car" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+            },
+            params:  {role: ['member']}
+        },
 
         LiveChatforCS: {
             screen: LivechatStack,navigationOptions: {
@@ -279,14 +299,6 @@ const DrawerNavigator = createDrawerNavigator(
                 drawerIcon: <Icon type="material-community" name="calendar" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
             params: {role: ['collector']}
-        },
-
-        CustomerPendingPickups: {
-            screen: CustomerPendingPickupsStack, navigationOptions: {
-                drawerLabel: "Pending Pickups",
-                drawerIcon: <Icon type="material-community" name="car" color="#1F9AFC" iconStyle={styles.menuIcon}/>
-            },
-            params:  {role: ['member']}
         },
 
         LogOut: {
