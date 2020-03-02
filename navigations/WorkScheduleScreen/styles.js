@@ -112,4 +112,15 @@ textTitle: {
 drawerIcon: {
     marginLeft: wp('-6%')
 },
+
+welcomeWrapper: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: wp('100%'),
+    height: wp('10%'),
+},
+welcomeTxt: {
+    fontSize: wp('5%'),
+    color: 'rgba(96,100,109, 1)',
+}
 })
