@@ -100,6 +100,7 @@ export default class CollectorPickupView extends Component {
     await db.collection('recycled-items')
       .where('userId', '==', item.userId)
       .where('collected', '==', false)
+      .where('cancelled', '==', false)
       .get()
       .then((snapshots) => {
         snapshots.forEach((doc) => {
