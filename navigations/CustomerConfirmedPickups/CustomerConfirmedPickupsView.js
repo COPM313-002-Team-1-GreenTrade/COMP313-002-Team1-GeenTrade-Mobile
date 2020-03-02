@@ -113,7 +113,7 @@ export default class CustomerConfirmedPickupsView extends Component {
 							</TouchableWithoutFeedback>
             </View>
             <View style={styles.titleWrapper}>
-              <Text style={styles.textTitle}>Pending Pickups</Text>
+              <Text style={styles.textTitle}>Confirmed Pickups</Text>
             </View>
           </View>
         </View>
