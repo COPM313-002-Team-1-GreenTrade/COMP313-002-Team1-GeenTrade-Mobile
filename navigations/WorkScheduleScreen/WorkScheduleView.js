@@ -34,21 +34,21 @@ export default class WorkSchedule extends Component {
 
     fetchData = () => {
         let db = firebase.firestore();
-
         try {
             const shiftList = [];
-
             this.setState({ isLoading: true });
             db.collection("users")
                 .doc(firebase.auth().currentUser.uid)
                 .collection('work-schedules')
-                .get().then((schedules) => {
+                .get()
+                .then((schedules) => {
                     if (schedules.empty) {
                         this.setState({ loading: false });
                     }
                     schedules.forEach((s) => {
                         var shift =
                         {
+                            selected_id: s.id,
                             workDate: s.data().workDate,
                             startTime: s.data().startTime,
                             endTime: s.data().endTime,
@@ -80,10 +80,11 @@ export default class WorkSchedule extends Component {
 
     toggleShiftView = (selectedDate) => {
         this.props.navigation.navigate("Shift", {
-            // year: selectedDate.year,
-            // month: selectedDate.month,
-            // day: selectedDate.day
-            dateString: selectedDate
+            selected_id: this.state.selected_id,
+            dateString: selectedDate,
+            selected_start_time: this.state.selected_start_time,
+            selected_end_time: this.state.selected_end_time,
+            selected_break_time: this.state.selected_break_time
         });
     }
 
@@ -92,11 +93,13 @@ export default class WorkSchedule extends Component {
         var selected_start_time;
         var selected_end_time;
         var selected_break_time;
+        var selected_id;
 
         this.state.shiftsData.map(function (data, idx) {
             if (data.workDate == selectedDate.dateString) {
                 // set detail for this date!
                 isExist = true;
+                selected_id = data.selected_id;
                 selected_start_time = data.startTime;
                 selected_end_time = data.endTime;
                 selected_break_time = data.breakTime;
@@ -105,6 +108,7 @@ export default class WorkSchedule extends Component {
         
         // save detail information to show
         this.setState({
+            selected_id: selected_id,
             isExist: isExist,
             selected_work_date: selectedDate.dateString,
             selected_start_time: selected_start_time,
@@ -173,12 +177,23 @@ export default class WorkSchedule extends Component {
                                     </Body>
                                 </ListItem>
                             </List>
-                            <Button title="Edit Shift"/>
+                            <Button title="Edit Shift" onPress={() => {this.toggleShiftView(this.state.selected_work_date)}}/>
                         </View>
                         :
-                        <Button title="Add Shift" onPress={() => {this.toggleShiftView(this.state.selected_work_date)}}/>
+                        <View>
+                            <List style={styles.listWrapper}>
+                                <ListItem style={styles.itemWrapper}>
+                                    <Left>
+                                        <Text style={styles.hint}>Date</Text>
+                                    </Left>
+                                    <Body style={styles.body}>
+                                        <Text style={styles.itemText}>{this.state.selected_work_date}</Text>
+                                    </Body>
+                                </ListItem>
+                            </List>
+                            <Button title="Add Shift" onPress={() => {this.toggleShiftView(this.state.selected_work_date)}}/>
+                        </View>
                     }
-
                 </View>
             </SafeAreaView>
         );
