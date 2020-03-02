@@ -27,6 +27,8 @@ import NameEditView from "../navigations/ProfileScreen/NameEditView"
 import EmailEditView from "../navigations/ProfileScreen/EmailEditView"
 import AddressEditView from "../navigations/ProfileScreen/AddressEditView";
 import PhoneEditView from "../navigations/ProfileScreen/PhoneEditView";
+import WorkScheduleView from "../navigations/WorkScheduleScreen/WorkScheduleView";
+import ShiftView from "../navigations/WorkScheduleScreen/ShiftView";
 import { connect } from 'react-redux';
 import {updateFirstName} from '../actions/Profile/actionCreators';
 import {updateLastName} from '../actions/Profile/actionCreators';
@@ -175,6 +177,15 @@ const ProfileStack = createStackNavigator({
     initialRouteName: 'Profile'},
 )
 
+const WorkScheduleStack = createStackNavigator({
+    WorkSchedule: WorkScheduleView,
+    Shift: ShiftView
+},
+{
+    headerMode: "none",
+    initialRouteName: 'WorkSchedule'},
+)
+
 const DrawerNavigator = createDrawerNavigator(
     {
         Home: {
@@ -230,6 +241,7 @@ const DrawerNavigator = createDrawerNavigator(
             params:  {role: ['member', 'collector']}
         },
 
+
         LiveChatforCS: {
             screen: LivechatStack,navigationOptions: {
                 drawerLabel: "Contacts",
@@ -237,6 +249,15 @@ const DrawerNavigator = createDrawerNavigator(
        
             },  params: {role: ['member', 'collector']}
         },
+
+        WorkSchedule: {
+            screen: WorkScheduleStack, navigationOptions: {
+                drawerLabel: "Work Schedule",
+                drawerIcon: <Icon type="material-community" name="calendar" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+            },
+            params: {role: ['collector']}
+        },
+
         LogOut: {
             screen: HomeView, navigationOptions: {
                 drawerLabel: "Log Out",
