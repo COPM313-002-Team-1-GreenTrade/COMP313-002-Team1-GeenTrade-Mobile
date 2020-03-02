@@ -17,7 +17,7 @@ export default class Scheduling extends Component {
     const maxDateOffsetinMilli = 10 * 24 * 60 * 60 * 1000;
     this.state = {
       userDisplayName: '',
-      date: new Date(),
+      date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
       maxDate: new Date(Date.now() + maxDateOffsetinMilli),
       message: "Lets Schedule It",
       user: '',
