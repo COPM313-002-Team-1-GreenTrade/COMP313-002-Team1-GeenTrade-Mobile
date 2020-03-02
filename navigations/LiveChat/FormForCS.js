@@ -7,6 +7,10 @@ import {
   TextInput,
   TouchableHighlight
 } from 'react-native';
+import SafeAreaView from "react-native-safe-area-view";
+import { Icon} from 'react-native-elements';
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import styles from "./styles";
 import 'firebase/firestore';
 import firebase from '../../config/firebase'
 
@@ -47,6 +51,26 @@ export default class FormForCS extends Component{
 
     render() {
       return (
+        <SafeAreaView style={styles.container}>
+        <View style={styles.headerContainer}>
+            <View style={styles.header}>
+                <View style={styles.iconWrapper}>
+                    <TouchableWithoutFeedback onPress={() => this.props.navigation.openDrawer()}>
+                    <Icon
+                        type="material"
+                        name="menu"
+                        size={30}
+                        color="#fff"
+                        containerStyle={styles.drawerIcon}
+                    />
+                    </TouchableWithoutFeedback>
+                </View>
+                <View style={styles.titleWrapper}>
+                    <Text style={styles.textTitle}>Contact</Text>
+                </View>
+            </View>
+        </View>
+          
         <View style={styles.main}>
             <Text style={styles.title}>Name:</Text>
           <TextInput
@@ -83,47 +107,7 @@ export default class FormForCS extends Component{
                 </Text>
               </TouchableHighlight>
         </View>
+        </SafeAreaView>
       )
     }
   }
-  const styles = StyleSheet.create({
-    main: {
-      flex: 1,
-      padding: 30,
-      flexDirection: 'column',
-      justifyContent: 'center',
-      backgroundColor: '#2a8ab7'
-    },
-    title: {
-      marginBottom: 20,
-      fontSize: 25,
-      textAlign: 'center'
-    },
-    itemInput: {
-      height: 50,
-      padding: 4,
-      marginRight: 5,
-      fontSize: 23,
-      borderWidth: 1,
-      borderColor: 'white',
-      borderRadius: 8,
-      color: 'white'
-    },
-    buttonText: {
-      fontSize: 18,
-      color: '#111',
-      alignSelf: 'center'
-    },
-    button: {
-      height: 45,
-      flexDirection: 'row',
-      backgroundColor:'white',
-      borderColor: 'white',
-      borderWidth: 1,
-      borderRadius: 8,
-      marginBottom: 10,
-      marginTop: 10,
-      alignSelf: 'stretch',
-      justifyContent: 'center'
-    }
-  });
