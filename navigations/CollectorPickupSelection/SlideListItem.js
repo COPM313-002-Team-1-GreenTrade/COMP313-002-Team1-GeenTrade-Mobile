@@ -26,8 +26,12 @@ const styles = StyleSheet.create({
         color: '#fff',
         padding: 25,
     },
+    leftAction: {
+        backgroundColor: '#994d00',
+        justifyContent: 'center',
+    },
     rightAction: {
-        backgroundColor: '#FF0000',
+        backgroundColor: '#008000',
         justifyContent: 'center',
         alignItems: 'flex-end',
     },
@@ -35,6 +39,27 @@ const styles = StyleSheet.create({
 
 export const Separator = () => <View style={styles.separator} />;
 
+const LeftActions = ({progress, dragX, onPress }) => {
+    const scale = dragX.interpolate({
+        inputRange: [0, 100],
+        outputRange: [0, 1.5],
+        extrapolate: 'clamp',
+    })
+    return (
+        <TouchableOpacity onPress={onPress}>
+            <View style={styles.leftAction}>
+                <Animated.View style={{ transform: [{ scale }]}}>
+                    <Icon
+                        type="material-community"
+                        name="google-maps"
+                        size={30}
+                        iconStyle={styles.swipeIcons}
+                    />
+                </Animated.View>          
+            </View>
+        </TouchableOpacity>
+    )
+};
 const RightActions = ({ progress, dragX, onPress }) => {
     const scale = dragX.interpolate({
         inputRange: [-100, 0],
@@ -47,7 +72,7 @@ const RightActions = ({ progress, dragX, onPress }) => {
                 <Animated.View style={{ transform: [{ scale }]}}>
                     <Icon
                         type="material-community"
-                        name="delete"
+                        name="check"
                         size={30}
                         iconStyle={styles.swipeIcons}
                     />
@@ -57,8 +82,9 @@ const RightActions = ({ progress, dragX, onPress }) => {
     )
 };
 
-const SlideListItem = ({ item, onRightPress }) => (
+const SlideListItem = ({ item, onLeftPress, onRightPress }) => (
     <Swipeable
+        renderLeftActions={(progress, dragX) => <LeftActions progress={progress} dragX={dragX} onPress={onLeftPress} />}
         renderRightActions={(progress, dragX) => <RightActions progress={progress} dragX={dragX} onPress={onRightPress} />}
     >
         <ListItem

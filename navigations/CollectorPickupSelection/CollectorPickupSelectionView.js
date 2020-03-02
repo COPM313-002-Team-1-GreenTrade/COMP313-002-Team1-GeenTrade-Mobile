@@ -31,7 +31,7 @@ export default class CollectorPickupSelectionView extends Component {
 
       this.setState({ isLoading: true });
       db.collection("pickups")
-        .where("memberId", "==", firebase.auth().currentUser.uid)
+        .where("collectorId", "==", null)
         .where("fulfilledTime", "==", null)
         .where("cancelled", "==", false)
         .get().then((querySnapshot) => {
@@ -56,16 +56,18 @@ export default class CollectorPickupSelectionView extends Component {
     catch (error) {
       console.log(error);
     }
+  }  
+  
+  toggleMap = (item) => {
+    this.props.navigation.navigate("CollectorMap", { address: item.address, notes: item.notes });
   }
 
-  cancelPickup = async (item) => {
+  addPickup = async (item) => {
     await this.updatePickupToDB(item);
-    
   }
 
   updatePickupToDB = async (item) => {
     let db = firebase.firestore();
-    let totalEstimatedPoints = 0;
     let batch = db.batch();
     let currentTime = firebase.firestore.FieldValue.serverTimestamp();
 
@@ -74,12 +76,18 @@ export default class CollectorPickupSelectionView extends Component {
       .doc(item.userId)
       .collection('pickups')
       .doc(item.id);
-    batch.update(clientPickupsRef, { fulfilledTime: "cancelled" });
+    batch.update(clientPickupsRef, { 
+      collectorId: firebase.auth().currentUser.uid, 
+      collectorName: firebase.auth().currentUser.displayName
+     });
 
     // Update pickups in pickups collection
     let pickupsRef = db.collection('pickups')
       .doc(item.id);
-    batch.update(pickupsRef, { cancelled: true });
+    batch.update(pickupsRef, { 
+      collectorId: firebase.auth().currentUser.uid, 
+      collectorName: firebase.auth().currentUser.displayName
+    });
 
     await batch.commit();
   }
@@ -87,7 +95,8 @@ export default class CollectorPickupSelectionView extends Component {
   renderItem = ({ item }) => (
     <SlideListItem
       item={item}
-      onRightPress={() => {  this.cancelPickup(item) }}
+      onLeftPress={() => { this.toggleMap(item) }}
+      onRightPress={() => {  this.addPickup(item) }}
     />
   );
 
@@ -96,8 +105,6 @@ export default class CollectorPickupSelectionView extends Component {
       <Text style={styles.displayMessage}>No Pickups Found.</Text>
     );
   }
-
-  
 
   render() {
     return (
@@ -116,7 +123,7 @@ export default class CollectorPickupSelectionView extends Component {
 							</TouchableWithoutFeedback>
             </View>
             <View style={styles.titleWrapper}>
-              <Text style={styles.textTitle}>Pending Pickups</Text>
+              <Text style={styles.textTitle}>Select Available Pickups</Text>
             </View>
           </View>
         </View>

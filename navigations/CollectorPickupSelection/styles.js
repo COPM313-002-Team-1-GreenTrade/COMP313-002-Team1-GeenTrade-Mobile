@@ -42,7 +42,6 @@ export default StyleSheet.create({
         color: 'dimgrey'
     },
     DrawerComponentScrollView: {
-        // marginTop: hp('5"%'),
     },
     menuItem: {
         justifyContent: 'center',
