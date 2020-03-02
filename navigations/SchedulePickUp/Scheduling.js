@@ -198,15 +198,14 @@ export default class Scheduling extends Component {
       batch.set(clientPickUpsRef, {
         scheduledTime: firebase.firestore.Timestamp.fromDate(this.state.dateTimestamp),
         additionalInfo: this.state.additionalInfo,
-        collectorName: this.state.collectorperson,
-        collectorId: this.state.collectPersonId,
+        // collectorName: this.state.collectorperson,
+        // collectorId: this.state.collectPersonId,
         fulfilledTime: null,
       });
 
       // write to pickups collection
       if (!this.state.manualEntry) {
-        console.log("SHouldnt work here");
-
+        console.log("Shouldnt work here");
 
         batch.set(pickUpsRef, {
           memberId: firebase.auth().currentUser.uid,
@@ -221,8 +220,8 @@ export default class Scheduling extends Component {
           scheduledTime: firebase.firestore.Timestamp.fromDate(this.state.dateTimestamp),
           additionalInfo: this.state.additionalInfo,
           cancelled: false,
-          collectorId: this.state.collectPersonId,
-          collectorName: this.state.collectorperson,
+          // collectorId: this.state.collectPersonId,
+          // collectorName: this.state.collectorperson,
           fulfilledTime: null,
         });
       }
@@ -257,8 +256,8 @@ export default class Scheduling extends Component {
             scheduledTime: firebase.firestore.Timestamp.fromDate(this.state.dateTimestamp),
             additionalInfo: this.state.additionalInfo,
             cancelled: false,
-            collectorId: this.state.collectPersonId,
-            collectorName: this.state.collectorperson,
+            // collectorId: this.state.collectPersonId,
+            // collectorName: this.state.collectorperson,
             fulfilledTime: null,
 
 

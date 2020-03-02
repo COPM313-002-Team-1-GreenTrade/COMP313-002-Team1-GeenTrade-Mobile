@@ -16,6 +16,7 @@ import SignInView from "../navigations/SignInScreen/SignInView";
 import SignUpView from "../navigations/SignUpScreen/SignUpView";
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
 import CollectorPickupHistory from "../navigations/CollectorPickupHistory/CollectorPickupHistoryView";
+import CustomerPendingPickupsView from "../navigations/CustomerPendingPickups/CustomerPendingPickupsView";
 import LiveChatView from "../navigations/LiveChat/FormForCS";
 import Scheduling from "../navigations/SchedulePickUp/Scheduling";
 import ContainerView from "../navigations/ContainerScreen/ContainerView";
@@ -186,6 +187,13 @@ const WorkScheduleStack = createStackNavigator({
     initialRouteName: 'WorkSchedule'},
 )
 
+const CustomerPendingPickupsStack = createStackNavigator({
+    CustomerPickUp: CustomerPendingPickupsView
+},
+{
+    headerMode: "none"
+})
+
 const DrawerNavigator = createDrawerNavigator(
     {
         Home: {
@@ -256,6 +264,14 @@ const DrawerNavigator = createDrawerNavigator(
                 drawerIcon: <Icon type="material-community" name="calendar" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
             params: {role: ['collector']}
+        },
+
+        CustomerPendingPickups: {
+            screen: CustomerPendingPickupsStack, navigationOptions: {
+                drawerLabel: "Pending Pickups",
+                drawerIcon: <Icon type="material-community" name="car" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+            },
+            params:  {role: ['member']}
         },
 
         LogOut: {
