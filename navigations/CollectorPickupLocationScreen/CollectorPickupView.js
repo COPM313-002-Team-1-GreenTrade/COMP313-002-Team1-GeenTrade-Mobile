@@ -42,6 +42,7 @@ export default class CollectorPickupView extends Component {
       db.collection("pickups")
         .where("collectorId", "==", firebase.auth().currentUser.uid)
         .where("fulfilledTime", "==", null)
+        .where('cancelled', '==', false)
         .get().then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
             var pickupInfo = {
@@ -100,7 +101,6 @@ export default class CollectorPickupView extends Component {
     await db.collection('recycled-items')
       .where('userId', '==', item.userId)
       .where('collected', '==', false)
-      .where('cancelled', '==', false)
       .get()
       .then((snapshots) => {
         snapshots.forEach((doc) => {
