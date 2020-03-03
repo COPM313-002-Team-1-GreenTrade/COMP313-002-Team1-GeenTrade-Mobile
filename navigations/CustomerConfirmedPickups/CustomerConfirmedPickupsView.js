@@ -34,7 +34,7 @@ export default class CustomerConfirmedPickupsView extends Component {
         .where("memberId", "==", firebase.auth().currentUser.uid)
         .where("fulfilledTime", "==", null)
         .where("cancelled", "==", false)
-        .where("collectorId", "==", null)
+        .where("collectorId", "!=", null)
         .get().then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
             var pickupInfo = {
