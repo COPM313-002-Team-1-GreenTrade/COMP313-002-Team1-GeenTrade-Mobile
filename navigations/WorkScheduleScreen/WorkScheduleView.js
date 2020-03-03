@@ -61,7 +61,7 @@ export default class WorkSchedule extends Component {
 
                     // console.log("this.state.shiftsData ", this.state.shiftsData);
                 });
-
+          
             // assigned pickup
             var pickupList = [];
             db.collection("pickups")
@@ -236,8 +236,6 @@ export default class WorkSchedule extends Component {
                         <View>
                         </View>
                     }
-
-
                 </View>
             </SafeAreaView>
         );
