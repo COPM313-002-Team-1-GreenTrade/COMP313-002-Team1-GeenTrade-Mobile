@@ -2,12 +2,10 @@
 import React, { Component } from 'react';
 import {
     View,
-    Text,
-    ScrollView,
-    ActivityIndicator
+    Text
 } from 'react-native';
 import SafeAreaView from "react-native-safe-area-view";
-import { Icon, List, ListItem, Button } from 'react-native-elements';
+import { Icon, List, ListItem } from 'react-native-elements';
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import styles from "./styles";
 import 'firebase/firestore';
@@ -19,7 +17,15 @@ export default class IssuedList extends Component {
         this.ref = firebase.firestore().collection('ticket-for-cs');
         this.unsubscribe = null;
         this.state = {
-            boards: []
+            boards: [],
+            list: [{
+                title: 'Appointments',
+                icon: 'av-timer'
+              },
+              {
+                title: 'Trips',
+                icon: 'flight-takeoff'
+              }]
         };
     }
     BackToMainPage = () => {
@@ -67,25 +73,22 @@ export default class IssuedList extends Component {
                         </View>
                     </View>
                 </View>
-                <ScrollView >
-                    <List>
+           
+                <View>
+                <List>
                         {
-                            this.state.boards.map((item, i) => (
+                            this.state.list.map((item, i) => (
                                 <ListItem
                                     key={i}
-                                    subject={item.subject}
-                                    leftIcon={{ name: 'book', type: 'font-awesome' }}
-                                    onPress={() => {
-                                        this.props.navigation.navigate('Confirmation', {
-                                            boardkey: `${JSON.stringify(item.key)}`,
-                                        });
-                                    }}
+                                    title={item.title}
+                                    bottomDivider
                                 />
                             ))
                         }
                     </List>
-                </ScrollView>
+                    
                 );
+                </View>
             </SafeAreaView>
         )
     }

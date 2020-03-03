@@ -69,13 +69,15 @@ export default class FormForCS extends Component {
                             </TouchableWithoutFeedback>
                         </View>
                         <View style={styles.titleWrapper}>
-                            <Text style={styles.textTitle}>Contact</Text>
+                            <Text style={styles.textTitle}>Contact Us Form</Text>
                         </View>
                     </View>
                 </View>
 
                 <View style={styles.main}>
-                    <Text style={styles.title}>Name:</Text>
+                <Icon iconStyle={styles.iconStyle} type="material-community" name="account-question-outline" color="#B71C1C" size="77" />
+                  
+                    <Text style={styles.title}>{"\n"}Name:</Text>
                     <TextInput
                         style={styles.itemInput}
                         onChangeText={name => this.setState({ name })}
@@ -95,20 +97,13 @@ export default class FormForCS extends Component {
                     />
                     <Text style={styles.title}>Description:</Text>
                     <TextInput
-                        style={styles.itemInput}
+                        style={styles.itemInputforDescription}
+                        multiline = {true}
+                        numberOfLines = {10}
                         onChangeText={description => this.setState({ description })}
                         value={this.state.description}
                     />
-                    <TouchableHighlight
-                        style={styles.button}
-                        underlayColor="white"
-                        onPress={this.handleSubmit}
-                    >
-                        <Text
-                            style={styles.buttonText}>
-                            Add
-                </Text>
-                    </TouchableHighlight>
+                    <Button title="Submit" onPress={() => this.handleSubmit()} />    
                     <Button title="Cancel" onPress={() => this.onCancel()} />
                 </View>
             </SafeAreaView>
