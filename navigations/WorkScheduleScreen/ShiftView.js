@@ -42,8 +42,6 @@ export default class Shift extends Component {
         const selected_end_time = params ? params.selected_end_time : null;
         const selected_break_time = params ? params.selected_break_time : null;
 
-        console.log("componentDidMount selected_id >>>>> ", selected_id);
-
         this.setState({
             selected_id: selected_id,
             workDate: dateString,
@@ -128,10 +126,11 @@ export default class Shift extends Component {
 
     save = () => {
         //Ref to work-schedules
-        var workScheduleRef = db.collection(`users/${firebase.auth().currentUser.uid}/work-schedules`).doc();
+        var workScheduleRef = db.collection(`work-schedules`).doc();
         let batch = db.batch();
 
         batch.set(workScheduleRef, {
+            workerId: firebase.auth().currentUser.uid,
             workDate: this.state.workDate,
             startTime: this.state.startTime,
             endTime: this.state.endTime,
@@ -143,7 +142,7 @@ export default class Shift extends Component {
 
     update = (docId) => {
         //Ref to work-schedules
-        var workScheduleRef = db.collection(`users/${firebase.auth().currentUser.uid}/work-schedules`).doc(docId);
+        var workScheduleRef = db.collection(`work-schedules`).doc(docId);
         let batch = db.batch();
 
         batch.update(workScheduleRef, {
