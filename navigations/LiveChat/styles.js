@@ -8,6 +8,10 @@ export default StyleSheet.create({
         flexDirection: "column",
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     },
+    container1: {
+      flex: 1,
+      paddingBottom: 22
+     },
     headerContainer: {
         flexDirection: "row",
         width: wp('100%'),
@@ -21,6 +25,11 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    avatar: {
+      width: wp('22%'),
+      height: wp('22%'),
+      borderRadius: wp('11%'),
+  },
     iconWrapper: {
         flex: 0.5,
     },
@@ -42,6 +51,12 @@ export default StyleSheet.create({
     title: {
       marginBottom: 20,
       fontSize: 25,
+      textAlign: 'center'
+    },
+    title1: {
+      marginBottom: 40,
+      fontSize: 25,
+      fontFamily: 'Cochin',
       textAlign: 'center'
     },
     itemInput: {
