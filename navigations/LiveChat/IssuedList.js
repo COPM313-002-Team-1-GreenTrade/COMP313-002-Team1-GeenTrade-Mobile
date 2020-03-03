@@ -2,7 +2,9 @@
 import React, { Component } from 'react';
 import {
     View,
-    Text
+    Text,
+    Button,
+    ScrollView
 } from 'react-native';
 import SafeAreaView from "react-native-safe-area-view";
 import { Icon, List, ListItem } from 'react-native-elements';
@@ -21,11 +23,11 @@ export default class IssuedList extends Component {
             list: [{
                 title: 'Appointments',
                 icon: 'av-timer'
-              },
-              {
+            },
+            {
                 title: 'Trips',
                 icon: 'flight-takeoff'
-              }]
+            }]
         };
     }
     BackToMainPage = () => {
@@ -73,22 +75,26 @@ export default class IssuedList extends Component {
                         </View>
                     </View>
                 </View>
-           
-                <View>
-                <List>
-                        {
-                            this.state.list.map((item, i) => (
-                                <ListItem
-                                    key={i}
-                                    title={item.title}
-                                    bottomDivider
-                                />
-                            ))
-                        }
-                    </List>
-                    
-                );
-                </View>
+
+                <ScrollView style={styles.container}>
+                    {
+                        this.state.boards.map((item, i) => (
+                            <ListItem
+                                key={i}
+                                title={item.subject}
+                                subtitle={item.name}
+                                bottomDivider
+                                leftIcon={{ name: 'heartbeat', type: 'font-awesome' }}
+                                onPress={() => {
+                                    this.props.navigation.navigate('Confirmation', {
+                                        boardkey: `${JSON.stringify(item.key)}`,
+                                    });
+                                }}
+                            />
+                        ))
+                    }
+                </ScrollView>
+                <Button title="Customer Service Main Page" onPress={() => this.BackToMainPage()} />
             </SafeAreaView>
         )
     }
