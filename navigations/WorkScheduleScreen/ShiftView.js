@@ -2,9 +2,7 @@ import React, { Component } from "react";
 import { View, Text, Button, Alert } from "react-native";
 import { List, ListItem, Left, Body, Right } from 'native-base';
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
-import {  Icon } from "react-native-elements";
-import { FloatingTitleTextInputField } from '../../components/FloatingTitleTextInput/FloatingTitleTextInputField';
-import * as Animatable from 'react-native-animatable';
+import { Icon } from "react-native-elements";
 import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
 import firebase from '../../config/firebase';
@@ -20,42 +18,58 @@ export default class Shift extends Component {
         this.state = {
             isStartTimePickerVisible: false,
             isEndTimePickerVisible: false,
+            selected_id: '',
+            workDate: '',
             startTime: '',
-            endTime: '',
-            userDisplayName: ''
+            endTime: ''
         };
     }
 
-    handleTimePicker = (time, flag) => {
-        console.log("time >> ", moment(time).format('HH:mm'));
-        console.log("flag ", flag);
 
+    // Load my shifts for current month
+    async componentDidMount() {
+        const { navigation } = this.props;
+        // refresh screen after purchasing new containers
+        navigation.addListener('willFocus', () => {
+            // this.fetchData();
+        });
+
+        /* Read the params from the navigation state (from WorkScheduleView) */
+        const { params } = this.props.navigation.state;
+        const selected_id = params ? params.selected_id : null;
+        const dateString = params ? params.dateString : null;
+        const selected_start_time = params ? params.selected_start_time : null;
+        const selected_end_time = params ? params.selected_end_time : null;
+        const selected_break_time = params ? params.selected_break_time : null;
+
+        this.setState({
+            selected_id: selected_id,
+            workDate: dateString,
+            startTime: selected_start_time,
+            endTime: selected_end_time,
+            breakTime: selected_break_time
+        })
+    }
+
+    handleTimePicker = (time, flag) => {
         if (flag == 'start') {
             this.setState({
                 isStartTimePickerVisible: false,
                 startTime: moment(time).format('HH:mm')
             });
         } else {
-            console.log("startTime >> ", this.state.startTime);
-            console.log("endTime >> ", moment(time).format('HH:mm'));
-            console.log("??? >> ", this.state.startTime < moment(time).format('HH:mm'));
-
             if (this.state.startTime < moment(time).format('HH:mm')) {
-                console.log("1111");
                 this.setState({
                     isEndTimePickerVisible: false,
                     endTime: moment(time).format('HH:mm')
                 });
             } else {
-                console.log("2222");
                 Alert.alert("Please select right time to finish your work");
             }
         }
     }
 
     showPicker = (flag) => {
-        console.log("showPicker flag ", flag);
-
         if (flag == 'start') {
             this.setState({
                 isStartTimePickerVisible: true
@@ -72,8 +86,6 @@ export default class Shift extends Component {
     }
 
     hidePicker = (flag) => {
-        console.log("hidePicker flag ", flag);
-
         if (flag == 'start') {
             this.setState({
                 isStartTimePickerVisible: false
@@ -86,29 +98,60 @@ export default class Shift extends Component {
     }
 
     // storing the value and passing to db
-    async saveShift(year, month, day) {
+    async saveShift() {
         if (this.state.startTime == '' || this.state.endTime == '') {
             Alert.alert('Please choose your working time');
         }
         else {
-            //Ref to work-schedules
-            var workScheduleRef = db.collection(`users/${firebase.auth().currentUser.uid}/work-schedules`).doc();
+            var flag = '';
 
-            let batch = db.batch();
+            try {
+                if(this.state.selected_id) {
+                    // update
+                    flag = 'updated';
+                    this.update(this.state.selected_id);
+                }else {
+                    // save
+                    flag = 'saved';
+                    this.save();
+                }
+            } catch (error) {
+                console.log(error);
+            }
 
-            batch.set(workScheduleRef, {
-                // workerFullName: this.state.userDisplayName,
-                workDate: moment(new Date(year, month, day)).format('YYYY-MM-DD'),
-                startTime: this.state.startTime,
-                endTime: this.state.endTime,
-                breakTime: null
-            });
-
-            await batch.commit();
-
-            Alert.alert('Your shift successfully saved !');
+            Alert.alert('Your shift successfully ' + flag + ' !');
             this.props.navigation.goBack();
         }
+    }
+
+    save = () => {
+        //Ref to work-schedules
+        var workScheduleRef = db.collection(`work-schedules`).doc();
+        let batch = db.batch();
+
+        batch.set(workScheduleRef, {
+            workerId: firebase.auth().currentUser.uid,
+            workDate: this.state.workDate,
+            startTime: this.state.startTime,
+            endTime: this.state.endTime,
+            breakTime: null
+        });
+        
+        batch.commit();
+    }
+
+    update = (docId) => {
+        //Ref to work-schedules
+        var workScheduleRef = db.collection(`work-schedules`).doc(docId);
+        let batch = db.batch();
+
+        batch.update(workScheduleRef, {
+            startTime: this.state.startTime,
+            endTime: this.state.endTime,
+            breakTime: null
+        });
+        
+        batch.commit();
     }
 
     onCancel = () => {
@@ -116,11 +159,6 @@ export default class Shift extends Component {
     }
 
     render() {
-        /* Read the params from the navigation state (from WorkScheduleView) */
-        const { params } = this.props.navigation.state;
-        const year = params ? params.year : null;
-        const month = params ? params.month : null;
-        const day = params ? params.day : null;
 
         return (
             <SafeAreaView style={styles.container}>
@@ -149,10 +187,9 @@ export default class Shift extends Component {
                             <Text style={styles.hint}>Date</Text>
                         </Left>
                         <Body style={styles.body}>
-                            <Text style={styles.itemText}>{year}-{month}-{day}</Text>
+                            <Text style={styles.itemText}>{this.state.workDate}</Text>
                         </Body>
                         <Right style={styles.right}>
-                            {/* <Icon name='edit' type='material' color="#87D5FA" /> */}
                         </Right>
                     </ListItem>
                 </List>
@@ -200,7 +237,7 @@ export default class Shift extends Component {
                     minuteInterval={5}
                 />
 
-                <Button title="Save" onPress={() => this.saveShift(year, month, day)} style={styles.btnText} />
+                <Button title="Save" onPress={() => this.saveShift()} />
                 <Button title="Cancel" onPress={() => this.onCancel()} />
             </SafeAreaView>
         );
