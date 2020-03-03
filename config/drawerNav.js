@@ -16,7 +16,11 @@ import SignInView from "../navigations/SignInScreen/SignInView";
 import SignUpView from "../navigations/SignUpScreen/SignUpView";
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
 import CollectorPickupHistory from "../navigations/CollectorPickupHistory/CollectorPickupHistoryView";
-import LiveChatView from "../navigations/LiveChat/FormForCS";
+import LiveChatView from "../navigations/LiveChat/chatTest";
+import IssuedList from "../navigations/LiveChat/IssuedList";
+import ContactUsForm from "../navigations/LiveChat/FormForCS"
+import Confirmation from "../navigations/LiveChat/Confirmation";
+import ContactMainView from "../navigations/LiveChat/ContactMainView";
 import Scheduling from "../navigations/SchedulePickUp/Scheduling";
 import ContainerView from "../navigations/ContainerScreen/ContainerView";
 import CollectorMapView from "../navigations/CollectMapScreen/CollectorMapView";
@@ -158,12 +162,7 @@ const ContainerPurchaseStack = createStackNavigator({
     headerMode: "none", //Hide the back button react navigation
 });
 
-const LivechatStack = createStackNavigator({
-    LiveChat: LiveChatView,
-},
-{
-    headerMode: "none",
-});
+
 
 const ProfileStack = createStackNavigator({
     Profile: ProfileView,
@@ -175,6 +174,17 @@ const ProfileStack = createStackNavigator({
 {
     headerMode: "none",
     initialRouteName: 'Profile'},
+)
+const LivechatStack = createStackNavigator({
+    LiveChat: LiveChatView,
+    ContactUsForm: ContactUsForm,
+    Confirmation: Confirmation,
+    ContactMainView:ContactMainView,
+    IssuedList: IssuedList
+},
+{
+    headerMode: "none",
+    initialRouteName: 'ContactMainView'},
 )
 
 const WorkScheduleStack = createStackNavigator({
