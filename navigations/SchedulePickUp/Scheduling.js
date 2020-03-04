@@ -17,7 +17,7 @@ export default class Scheduling extends Component {
     const maxDateOffsetinMilli = 5 * 24 * 60 * 60 * 1000;
     this.state = {
       userDisplayName: '',
-      date: new Date(),
+      date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
       maxDate: new Date(Date.now() + maxDateOffsetinMilli),
       message: "Lets Schedule It",
       user: '',
@@ -198,8 +198,8 @@ export default class Scheduling extends Component {
       batch.set(clientPickUpsRef, {
         scheduledTime: firebase.firestore.Timestamp.fromDate(this.state.dateTimestamp),
         additionalInfo: this.state.additionalInfo,
-        collectorName: this.state.collectorperson,
-        collectorId: this.state.collectPersonId,
+        collectorName: null,
+        collectorId: null,
         fulfilledTime: null,
       });
 
@@ -221,8 +221,8 @@ export default class Scheduling extends Component {
           scheduledTime: firebase.firestore.Timestamp.fromDate(this.state.dateTimestamp),
           additionalInfo: this.state.additionalInfo,
           cancelled: false,
-          collectorId: this.state.collectPersonId,
-          collectorName: this.state.collectorperson,
+          collectorId: null,
+          collectorName: null,
           fulfilledTime: null,
         });
       }
@@ -257,8 +257,8 @@ export default class Scheduling extends Component {
             scheduledTime: firebase.firestore.Timestamp.fromDate(this.state.dateTimestamp),
             additionalInfo: this.state.additionalInfo,
             cancelled: false,
-            collectorId: this.state.collectPersonId,
-            collectorName: this.state.collectorperson,
+            collectorId: null,
+            collectorName: null,
             fulfilledTime: null,
 
 

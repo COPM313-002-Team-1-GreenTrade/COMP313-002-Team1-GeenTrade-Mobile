@@ -16,6 +16,8 @@ import SignInView from "../navigations/SignInScreen/SignInView";
 import SignUpView from "../navigations/SignUpScreen/SignUpView";
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
 import CollectorPickupHistory from "../navigations/CollectorPickupHistory/CollectorPickupHistoryView";
+import CustomerPendingPickupsView from "../navigations/CustomerPendingPickups/CustomerPendingPickupsView";
+import CollectorPickupSelectionView from "../navigations/CollectorPickupSelection/CollectorPickupSelectionView";
 import LiveChatView from "../navigations/LiveChat/chatTest";
 import IssuedList from "../navigations/LiveChat/IssuedList";
 import ContactUsForm from "../navigations/LiveChat/FormForCS"
@@ -145,6 +147,18 @@ class DrawerComponent extends Component {
 //   }
 
 // connect(mapStateToProps, mapDispatchToProps)(DrawerComponent)
+const CustomerPendingPickupsStack = createStackNavigator({
+    CustomerPickUp: CustomerPendingPickupsView
+},
+{
+    headerMode: "none"
+})
+const CollectorPickupSelectionStack = createStackNavigator({
+    CollectorPickupSelection: CollectorPickupSelectionView
+},
+{
+    headerMode: "none", 
+})
 
 const CollectorPickupStack = createStackNavigator({
     CollectorPickup: CollectorPickupView,
@@ -212,7 +226,14 @@ const DrawerNavigator = createDrawerNavigator(
             
              },
              params: {role: ['member', 'collector']}
-         },
+         },      
+         PickupSelection: {
+            screen: CollectorPickupSelectionStack, navigationOptions: {
+                drawerLabel: "Select Pickup",
+                drawerIcon: <Icon type="material-community" name="cellphone" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+            },
+            params: {role: ['collector']}
+        },
         Pickup: {
             screen: CollectorPickupStack, navigationOptions: {
                 drawerLabel: "Track Pickups",
@@ -249,6 +270,13 @@ const DrawerNavigator = createDrawerNavigator(
                 drawerIcon: <Icon type="material-community" name="car" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
             params:  {role: ['member', 'collector']}
+        },
+        CustomerPendingPickups: {
+            screen: CustomerPendingPickupsStack, navigationOptions: {
+                drawerLabel: "Pending Pickups",
+                drawerIcon: <Icon type="material-community" name="car" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+            },
+            params:  {role: ['member']}
         },
 
 
