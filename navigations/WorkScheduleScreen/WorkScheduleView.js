@@ -30,6 +30,10 @@ export default class WorkSchedule extends Component {
         navigation.addListener('willFocus', () => {
             this.fetchData();
         });
+
+        this.setState({
+            isExist: false
+        });
     }
 
     fetchData = () => {
@@ -162,7 +166,7 @@ export default class WorkSchedule extends Component {
                 db.collection("work-schedules").doc(this.state.selected_id).delete().then(function () {
                     Alert.alert('Your shift successfully removed !');
                 });
-                
+
                 // get new schdule list and hide detail view
                 this.fetchData();
                 this.setState({
@@ -202,12 +206,19 @@ export default class WorkSchedule extends Component {
                     </View>
                 </View>
                 <View>
+                    <View style={styles.welcomeWrapper}>
+                        <Text style={styles.welcomeTxt}>Your Working Area: Scarborough</Text>
+                    </View>
+                    <Text>{"\n"}</Text>
+
                     <Calendar
                         current={this.state.date}
                         minDate={this.state.date}
                         onDayPress={(day) => { this.showDetail(day) }}
                         markedDates={obj}
                     />
+                    <Text>{"\n"}</Text>
+
 
                     {this.state.isExist === true ?
                         <View>
