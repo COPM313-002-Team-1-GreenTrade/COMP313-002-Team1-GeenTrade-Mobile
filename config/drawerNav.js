@@ -19,7 +19,9 @@ import CollectorPickupHistory from "../navigations/CollectorPickupHistory/Collec
 import CustomerPendingPickupsView from "../navigations/CustomerPendingPickups/CustomerPendingPickupsView";
 import CollectorPickupSelectionView from "../navigations/CollectorPickupSelection/CollectorPickupSelectionView";
 import LiveChatView from "../navigations/LiveChat/chatTest";
+import SendEmail from "../navigations/LiveChat/SendEmail";
 import IssuedList from "../navigations/LiveChat/IssuedList";
+import DetailTicketInfo from "../navigations/LiveChat/DetailTicketInfo";
 import ContactUsForm from "../navigations/LiveChat/FormForCS"
 import Confirmation from "../navigations/LiveChat/Confirmation";
 import ContactMainView from "../navigations/LiveChat/ContactMainView";
@@ -194,7 +196,9 @@ const LivechatStack = createStackNavigator({
     ContactUsForm: ContactUsForm,
     Confirmation: Confirmation,
     ContactMainView:ContactMainView,
-    IssuedList: IssuedList
+    IssuedList: IssuedList,
+    DetailTicketInfo: DetailTicketInfo,
+    SendEmail:SendEmail
 },
 {
     headerMode: "none",

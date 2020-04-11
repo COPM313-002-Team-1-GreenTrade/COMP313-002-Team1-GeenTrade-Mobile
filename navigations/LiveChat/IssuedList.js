@@ -19,15 +19,7 @@ export default class IssuedList extends Component {
         this.ref = firebase.firestore().collection('ticket-for-cs');
         this.unsubscribe = null;
         this.state = {
-            boards: [],
-            list: [{
-                title: 'Appointments',
-                icon: 'av-timer'
-            },
-            {
-                title: 'Trips',
-                icon: 'flight-takeoff'
-            }]
+            boards: []
         };
     }
     BackToMainPage = () => {
@@ -37,13 +29,14 @@ export default class IssuedList extends Component {
     onCollectionUpdate = (querySnapshot) => {
         const boards = [];
         querySnapshot.forEach((doc) => {
-            const { subject, name, issuedDate, Description } = doc.data();
+            const { subject, name, issuedDate, description,status} = doc.data();
             boards.push({
                 key: doc.id,
                 name, // DocumentSnapshot
                 subject,
-                Description,
+                description,
                 issuedDate,
+                status
             });
         });
         this.setState({
@@ -54,6 +47,37 @@ export default class IssuedList extends Component {
         this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate);
     }
 
+    fetch = (item) => {
+        console.log(item.key);
+        let batch = firebase.firestore().batch();
+        var ref = firebase.firestore().collection("ticket-for-cs")
+       .doc(item.key)
+       
+       /*
+       .get().then(function(doc){
+           if(doc.exists){
+            console.log("Document data:", doc.data());
+        } else {
+            console.log("No such document!");
+        }
+       });
+*/
+       console.log("<<<<<test: >>>>"+ item.key)
+       console.log("testing");
+       
+    batch.update(ref ,{id: item.key});
+      
+    batch.commit()
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => {
+        Alert.alert('Error', 'Please try again!');
+        console.log(error);
+      });
+
+
+    }
     render() {
         return (
             <SafeAreaView style={styles.container}>
@@ -82,14 +106,14 @@ export default class IssuedList extends Component {
                             <ListItem
                                 key={i}
                                 title={item.subject}
-                                subtitle={item.name}
+                                subtitle={item.status}
                                 bottomDivider
                                 leftIcon={{ name: 'heartbeat', type: 'font-awesome' }}
                                 onPress={() => {
-                                    this.props.navigation.navigate('Confirmation', {
-                                        boardkey: `${JSON.stringify(item.key)}`,
+                                    this.fetch(item), this.props.navigation.navigate('DetailTicketInfo', {
+                                        ticketkey: item.key,
                                     });
-                                }}
+                                }} //`${JSON.stringify(item.key)}`
                             />
                         ))
                     }
