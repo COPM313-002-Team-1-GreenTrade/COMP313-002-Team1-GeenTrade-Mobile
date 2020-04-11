@@ -19,21 +19,54 @@ export default class FormForCS extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: null
+            name: null,
+            status: 'unread'
         };
         this.handleSubmit = this.handleSubmit.bind(this);
     }
+    componentWillMount() {
+        let getName;
+        let db = firebase.firestore();
+        try {
+            console.log("uid:>>>>" + firebase.auth().currentUser.uid);
+            db.collection("users").doc(firebase.auth().currentUser.uid)
+                .get()
+                .then(u => {
+                    if (u.exists) {
+                        if (u.get("displayName") != null) {
+                            getName= u.data().displayName
+                        }
+                    }
+                    else {
+                        console.log("No such document!");
+                    }
+                }).catch((error) => {
+                    console.log(">>>>>" + error);
+
+                }).finally(() => {
+                    this.setState({ name: getName })
+                    console.log(">>>>>success");
+                });
+            }
+            catch (error) {
+                console.log(error);
+            }
+    
+        }
 
     handleSubmit() {
-       // var user = firebase.auth().currentUser;
+       // var user = firebase.auth().currentUser.type;
         var ticketData = {
             name: this.state.name,
             subject: this.state.subject,
             issuedDate: this.state.issuedDate,
-            Description: this.state.description
+            description: this.state.description,
+            status: this.state.status
         }
         this.saveTicket(ticketData);
+       
         console.log(this.state.name);
+        console.log(this.state.status);
         this.navigateConfirmationPage();
     }
 
