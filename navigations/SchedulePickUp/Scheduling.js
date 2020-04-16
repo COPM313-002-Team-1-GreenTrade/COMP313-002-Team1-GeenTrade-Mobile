@@ -309,7 +309,11 @@ export default class Scheduling extends Component {
       Alert.alert('Please Choose a Date and Time ' + this.state.userDisplayName);
     }
     else {
-      if(this.state.collectorperson != null && this.state.collectPersonId != null) {
+      console.log("userIdList ", this.state.userIdList);
+      console.log("this.state.collectorperson ", this.state.collectorperson);
+      console.log("this.state.collectPersonId ", this.state.collectPersonId);
+
+      if(this.state.collectorperson != '' && this.state.collectPersonId != '') {
         var clientPickUpsRef = db.collection(`users/${firebase.auth().currentUser.uid}/pickups`).doc();
         var pickUpsRef = db.collection('pickups').doc(clientPickUpsRef.id);
 
