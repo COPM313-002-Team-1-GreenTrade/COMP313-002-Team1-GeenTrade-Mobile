@@ -9,17 +9,25 @@ import { Calendar } from 'react-native-calendars';
 import moment from 'moment';
 
 export default class WorkSchedule extends Component {
+
     constructor(props) {
         super(props);
+
+        var tomorrow = new Date();
+        //add a day to the date
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
         this.state = {
             date: new Date(),
+            minDate: tomorrow,
             shiftsData: [],
             isExist: false,
             selected_work_date: '',
             selected_start_time: '',
             selected_end_time: '',
             selected_break_time: '',
-            pickUpsData: []
+            pickUpsData: [],
+            workingArea: ''
         };
     }
 
@@ -92,6 +100,14 @@ export default class WorkSchedule extends Component {
                         pickUpsData: pickupList
                     });
                 });
+
+            // get working area
+            db.collection('users')
+            .doc(firebase.auth().currentUser.uid)
+            .get()
+            .then((doc) => {
+                this.setState({ workingArea: doc.data().workingArea });
+            });
 
         } catch (error) {
             console.log(error);
@@ -207,13 +223,11 @@ export default class WorkSchedule extends Component {
                 </View>
                 <View>
                     <View style={styles.welcomeWrapper}>
-                        <Text style={styles.welcomeTxt}>Your Working Area: Scarborough</Text>
+                        <Text style={styles.welcomeTxt}>Assigned Area: {this.state.workingArea}</Text>
                     </View>
-                    <Text>{"\n"}</Text>
-
                     <Calendar
                         current={this.state.date}
-                        minDate={this.state.date}
+                        minDate={this.state.minDate}
                         onDayPress={(day) => { this.showDetail(day) }}
                         markedDates={obj}
                     />

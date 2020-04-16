@@ -224,14 +224,14 @@ const DrawerNavigator = createDrawerNavigator(
                 drawerLabel: "Purchase Container(s)",
                 drawerIcon: <Icon type="material-community" name="shopping" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
-            params:  {role: ['member', 'collector']}
+            params:  {role: ['member']}
         },
         Containers: {
             screen: ContainerView, navigationOptions: {
                 drawerLabel: "Containers",
                 drawerIcon: <Icon type="material-community" name="trash-can-outline" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
-            params:  {role: ['member', 'collector']}
+            params:  {role: ['member']}
         },
         SchedulePickup: {
             screen: Scheduling, navigationOptions: {
@@ -247,7 +247,7 @@ const DrawerNavigator = createDrawerNavigator(
                 drawerLabel: "Contacts",
                 drawerIcon: <Icon type="material-community" name="chat-processing-outline" color="#1F9AFC" iconStyle={styles.menuIcon}/>
        
-            },  params: {role: ['member', 'collector']}
+            },  params: {role: ['member']}
         },
 
         WorkSchedule: {
