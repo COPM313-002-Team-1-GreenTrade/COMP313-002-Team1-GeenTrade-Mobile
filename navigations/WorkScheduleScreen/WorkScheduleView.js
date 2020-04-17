@@ -128,6 +128,10 @@ export default class WorkSchedule extends Component {
         }
     }
 
+    trackPickupView = (id) => {
+        this.props.navigation.navigate("CollectorPickup", {id: id});
+    }
+
     showDetail = (selectedDate) => {
         var isExist = false;
         var selected_start_time;
@@ -265,12 +269,11 @@ export default class WorkSchedule extends Component {
                                         <Text style={styles.hint}>Assigned Pickup</Text>
                                     </Left>
                                     <Body style={styles.body}>
-
                                         <View>
                                             {this.state.pickUpsData.map((data, i) => {
                                                 if (data.scheduledDate == this.state.selected_work_date) {
                                                     return (
-                                                        <Text style={styles.itemText} key={i}>{data.scheduledTime}</Text>
+                                                        <Text onPress={() => { this.trackPickupView(data.key) }} style={styles.itemText} key={i}>{data.scheduledTime} </Text>
                                                     );
                                                 }
                                             })}

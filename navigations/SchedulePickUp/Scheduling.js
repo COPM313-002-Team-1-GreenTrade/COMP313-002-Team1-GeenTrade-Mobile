@@ -310,6 +310,7 @@ export default class Scheduling extends Component {
     }
     else {
       console.log("userIdList ", this.state.userIdList);
+      this.state.collectorperson
       console.log("this.state.collectorperson ", this.state.collectorperson);
       console.log("this.state.collectPersonId ", this.state.collectPersonId);
 
@@ -349,8 +350,10 @@ export default class Scheduling extends Component {
             scheduledTime: firebase.firestore.Timestamp.fromDate(this.state.dateTimestamp),
             additionalInfo: this.state.additionalInfo,
             cancelled: false,
-            collectorId: null,
-            collectorName: null,
+            collectorId: this.state.collectPersonId,
+            collectorName: this.state.collectorperson,
+            // collectorId: null,
+            // collectorName: null,
             fulfilledTime: null,
           });
         }
