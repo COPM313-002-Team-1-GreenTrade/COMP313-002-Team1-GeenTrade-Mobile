@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, TouchableWithoutFeedback, Button } from "react-native";
+import { View, Text, TouchableWithoutFeedback, Button, Alert } from "react-native";
 import { List, ListItem, Left, Body } from 'native-base';
 import { Icon } from "react-native-elements";
 import styles from "./styles";
@@ -9,17 +9,25 @@ import { Calendar } from 'react-native-calendars';
 import moment from 'moment';
 
 export default class WorkSchedule extends Component {
+
     constructor(props) {
         super(props);
+
+        var tomorrow = new Date();
+        //add a day to the date
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
         this.state = {
             date: new Date(),
+            minDate: tomorrow,
             shiftsData: [],
             isExist: false,
             selected_work_date: '',
             selected_start_time: '',
             selected_end_time: '',
             selected_break_time: '',
-            pickUpsData: []
+            pickUpsData: [],
+            workingArea: ''
         };
     }
 
@@ -29,6 +37,10 @@ export default class WorkSchedule extends Component {
         // refresh screen after purchasing new containers
         navigation.addListener('willFocus', () => {
             this.fetchData();
+        });
+
+        this.setState({
+            isExist: false
         });
     }
 
@@ -41,7 +53,7 @@ export default class WorkSchedule extends Component {
                 .get()
                 .then((schedules) => {
                     schedules.forEach((s) => {
-                        if(s.data().workerId == firebase.auth().currentUser.uid) {
+                        if (s.data().workerId == firebase.auth().currentUser.uid) {
                             var shift =
                             {
                                 selected_id: s.id,
@@ -50,7 +62,7 @@ export default class WorkSchedule extends Component {
                                 endTime: s.data().endTime,
                                 breakTime: s.data().breakTime
                             };
-                            shiftList.push(shift);    
+                            shiftList.push(shift);
                             // console.log("shiftList ", shiftList);
                         }
                     });
@@ -61,32 +73,40 @@ export default class WorkSchedule extends Component {
 
                     // console.log("this.state.shiftsData ", this.state.shiftsData);
                 });
-          
+
             // assigned pickup
             var pickupList = [];
             db.collection("pickups")
-            .get()
-            .then((pickups) => {
-                pickups.forEach((pickup) => {
-                    if(pickup.data().collectorId == firebase.auth().currentUser.uid) {
-                        if(pickup.data().scheduledTime != null) {
-                            var pickup =
-                            {
-                                // scheduledTime: s.data().scheduledTime
-                                key: pickup.id,
-                                scheduledDate: moment(pickup.data().scheduledTime.toDate()).format('YYYY-MM-DD'),
-                                scheduledTime: moment(pickup.data().scheduledTime.toDate()).format('hh:mm A'),
-                            };
-                            pickupList.push(pickup); 
+                .get()
+                .then((pickups) => {
+                    pickups.forEach((pickup) => {
+                        if (pickup.data().collectorId == firebase.auth().currentUser.uid) {
+                            if (pickup.data().scheduledTime != null) {
+                                var pickup =
+                                {
+                                    // scheduledTime: s.data().scheduledTime
+                                    key: pickup.id,
+                                    scheduledDate: moment(pickup.data().scheduledTime.toDate()).format('YYYY-MM-DD'),
+                                    scheduledTime: moment(pickup.data().scheduledTime.toDate()).format('hh:mm A'),
+                                };
+                                pickupList.push(pickup);
+                            }
                         }
-                    }
+                    });
+
+                    console.log("pickupList>>> ", pickupList);
+
+                    this.setState({
+                        pickUpsData: pickupList
+                    });
                 });
 
-                console.log("pickupList>>> ", pickupList);
-
-                this.setState({
-                    pickUpsData: pickupList
-                });
+            // get working area
+            db.collection('users')
+            .doc(firebase.auth().currentUser.uid)
+            .get()
+            .then((doc) => {
+                this.setState({ workingArea: doc.data().workingArea });
             });
 
         } catch (error) {
@@ -95,13 +115,17 @@ export default class WorkSchedule extends Component {
     }
 
     toggleShiftView = (selectedDate) => {
-        this.props.navigation.navigate("Shift", {
-            selected_id: this.state.selected_id,
-            dateString: selectedDate,
-            selected_start_time: this.state.selected_start_time,
-            selected_end_time: this.state.selected_end_time,
-            selected_break_time: this.state.selected_break_time
-        });
+        if (this.state.pickUpsData.some(item => selectedDate === item.scheduledDate)) {
+            Alert.alert("You have assigned pickup schedule !");
+        } else {
+            this.props.navigation.navigate("Shift", {
+                selected_id: this.state.selected_id,
+                dateString: selectedDate,
+                selected_start_time: this.state.selected_start_time,
+                selected_end_time: this.state.selected_end_time,
+                selected_break_time: this.state.selected_break_time
+            });
+        }
     }
 
     showDetail = (selectedDate) => {
@@ -123,7 +147,7 @@ export default class WorkSchedule extends Component {
         });
 
         // if there are no shift, just redirect to shift view
-        if(!isExist) {
+        if (!isExist) {
             this.props.navigation.navigate("Shift", {
                 selected_id: '',
                 dateString: selectedDate.dateString,
@@ -142,12 +166,32 @@ export default class WorkSchedule extends Component {
                 selected_break_time: selected_break_time
             });
         }
-        
+
     }
 
     deleteShift = (selectedDate) => {
-        // 1. check pickup schedule exist or not
-        // 2. only can delete after 7 days schedule from current day
+        // check pickup schedule exist or not
+        // console.log("CHECK>>>>>> ", this.state.pickUpsData.some(item => selectedDate === item.scheduledDate));
+        if (this.state.pickUpsData.some(item => selectedDate === item.scheduledDate)) {
+            Alert.alert("You have assigned pickup schedule !");
+        } else {
+            // delete selected shift
+            try {
+                // firebase.database().ref('work-schedules').child(this.state.selected_id).remove();
+                let db = firebase.firestore();
+                db.collection("work-schedules").doc(this.state.selected_id).delete().then(function () {
+                    Alert.alert('Your shift successfully removed !');
+                });
+
+                // get new schdule list and hide detail view
+                this.fetchData();
+                this.setState({
+                    isExist: false
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
     }
 
     render() {
@@ -178,12 +222,17 @@ export default class WorkSchedule extends Component {
                     </View>
                 </View>
                 <View>
+                    <View style={styles.welcomeWrapper}>
+                        <Text style={styles.welcomeTxt}>Assigned Area: {this.state.workingArea}</Text>
+                    </View>
                     <Calendar
                         current={this.state.date}
-                        minDate={this.state.date}
+                        minDate={this.state.minDate}
                         onDayPress={(day) => { this.showDetail(day) }}
                         markedDates={obj}
                     />
+                    <Text>{"\n"}</Text>
+
 
                     {this.state.isExist === true ?
                         <View>
@@ -218,19 +267,19 @@ export default class WorkSchedule extends Component {
                                     <Body style={styles.body}>
 
                                         <View>
-                                        {this.state.pickUpsData.map((data, i) => {
-                                            if(data.scheduledDate == this.state.selected_work_date) {
-                                                return (
-                                                    <Text style={styles.itemText} key={i}>{data.scheduledTime}</Text>
-                                                );
-                                            }
-                                        })}
+                                            {this.state.pickUpsData.map((data, i) => {
+                                                if (data.scheduledDate == this.state.selected_work_date) {
+                                                    return (
+                                                        <Text style={styles.itemText} key={i}>{data.scheduledTime}</Text>
+                                                    );
+                                                }
+                                            })}
                                         </View>
                                     </Body>
                                 </ListItem>
                             </List>
-                            <Button title="Edit" onPress={() => {this.toggleShiftView(this.state.selected_work_date)}}/>
-                            <Button title="Delete" onPress={() => {this.deleteShift(this.state.selected_work_date)}}/>
+                            <Button title="Edit" onPress={() => { this.toggleShiftView(this.state.selected_work_date) }} />
+                            <Button title="Delete" onPress={() => { this.deleteShift(this.state.selected_work_date) }} />
                         </View>
                         :
                         <View>

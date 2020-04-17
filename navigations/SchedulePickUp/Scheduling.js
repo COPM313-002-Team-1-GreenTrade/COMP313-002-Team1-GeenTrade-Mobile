@@ -37,6 +37,7 @@ export default class Scheduling extends Component {
       showTheThing: false,
       manualEntry: false,
 
+      userIdList: []
     };
   }
 
@@ -65,10 +66,10 @@ export default class Scheduling extends Component {
     this.setState({
       isVisible: false,
       chosenDate: moment(datetime).format('MMMM, Do YYYY HH:mm'),
-      dateTimestamp: datetime,
+      dateTimestamp: datetime
     });
-    //setting up the pickup randomly
-    this.assignPickup();
+    //setting up the pickup 
+    this.assignPickup(datetime);
   }
 
   handleInfo = (text) => {
@@ -128,31 +129,152 @@ export default class Scheduling extends Component {
     })
   }
 
-
-
-
   //method for assigningpicker
-  assignPickup() {
+  assignPickup(datetime) {
     //random collector
-    let collectorreferenceurl = db.collection("users");
-    var collectorsavailable = [];
-    let queryref = collectorreferenceurl.where('type', '==', 'collector').get()
-      .then(snapshot => {
-        if (snapshot.empty) {
-          console.log("No matching Collector");
-          return;
-        }
+    // let collectorreferenceurl = db.collection("users");
+    // var collectorsavailable = [];
+    // let queryref = collectorreferenceurl.where('type', '==', 'collector').get()
+    //   .then(snapshot => {
+    //     if (snapshot.empty) {
+    //       console.log("No matching Collector");
+    //       return;
+    //     }
 
-        snapshot.forEach(doc => {
-          collectorsavailable.push(doc.data());
-          var randomcollector = collectorsavailable[Math.floor(Math.random() * collectorsavailable.length)];
-          var randomcollectoruid = randomcollector.uid;
-          this.setState({ collectorperson: randomcollector.displayName, collectPersonId: randomcollectoruid });
-        })
-      })
-      .catch(err => {
-        console.log("Error getting collectors", err);
-      })
+    //     snapshot.forEach(doc => {
+    //       collectorsavailable.push(doc.data());
+    //       var randomcollector = collectorsavailable[Math.floor(Math.random() * collectorsavailable.length)];
+    //       var randomcollectoruid = randomcollector.uid;
+    //       this.setState({ collectorperson: randomcollector.displayName, collectPersonId: randomcollectoruid });
+    //     })
+    //   })
+    //   .catch(err => {
+    //     console.log("Error getting collectors", err);
+    //   })
+
+
+
+    // 2020-04-08 Kyungjin Jeong - Assign pickup schedule to collector 
+    // ----------------------------- Start -----------------------------
+    // 0. Formatting for selected date and time
+    originalSelectedDate = new Date(datetime);
+
+    var year = originalSelectedDate.getFullYear();
+    var month = originalSelectedDate.getMonth() + 1;
+    if (month < 10) {
+      month = '0' + month;
+    }
+    var date = originalSelectedDate.getDate();
+    if (date < 10) {
+      date = '0' + date;
+    }
+    var selectedDate = year + '-' + month + '-' + date;
+    var selectedTimeObject = new Date();
+    selectedTimeObject.setHours(originalSelectedDate.getHours(), originalSelectedDate.getMinutes());
+
+    var userIdList = [];
+
+    db.collection('work-schedules').get().then((schedules) => {
+      schedules.forEach((s1) => {
+        userIdList.push(s1.data().workerId);
+      });
+
+      // 1. Search collectors who have assigned this working area
+      db.collection('users').get().then((users) => {
+        users.forEach((u) => {
+          if(userIdList.includes(u.data().uid)) {
+            if (u.data().workingArea != this.state.manualCity) {
+              // console.log("working area not match: ", u.data().uid);
+              userIdList.splice(userIdList.indexOf(u.data().uid), 1);
+            }
+          }
+        });
+
+        // 2. Search collector's working schedule
+        db.collection('work-schedules').get().then((schedules) => {
+          schedules.forEach((s) => {
+            if (userIdList.includes(s.data().workerId)) {
+              if (s.data().workDate == selectedDate) {
+                // 2 Formatting for working hours and minutes
+                var workStartTimeObject = new Date();
+                workStartTimeObject.setHours(s.data().startTime.split(':')[0], s.data().startTime.split(':')[1]);
+                var workEndTimeObject = new Date();
+                workEndTimeObject.setHours(s.data().endTime.split(':')[0], s.data().endTime.split(':')[1]);
+
+                // console.log("workStartTimeObject ", moment(workStartTimeObject).format("HH:mm"));
+                // console.log("workEndTimeObject ", moment(workEndTimeObject).format("HH:mm"));  
+                // console.log("selectedTimeObject ", moment(selectedTimeObject).format("HH:mm"));  
+                // console.log("selectedTimeObject > workStartTimeObject ", selectedTimeObject >= workStartTimeObject);
+                // console.log("selectedTimeObject < workEndTimeObject ", selectedTimeObject <= workEndTimeObject);
+
+                // 3. Check collector's working time
+                if ((selectedTimeObject > workStartTimeObject) && (selectedTimeObject < workEndTimeObject)) {
+                  // this collector is possible to work this day
+                  // console.log("this collector is possible to work this day: ", s.data().workerId);
+                } else {
+                  // not able to work (remove from userId list !)
+                  // console.log("working time is not match: ", s.data().workerId);
+                  userIdList.splice(userIdList.indexOf(s.data().workerId), 1);
+                }
+              } else {
+                // not able to work (remove from userId list !)
+                // console.log("work date is not match: ", s.data().workerId);
+                userIdList.splice(userIdList.indexOf(s.data().workerId), 1);
+              }
+            }
+          });
+
+          // 4. Check collector's other pickup schedules (pickup term should be 15 mins)
+          db.collection('pickups').get().then((pickups) => {
+            pickups.forEach((p) => {
+              if (userIdList.includes(p.data().collectorId)) {
+                // console.log("This collector have assigned schdule for this day ! need to check assigned pickup schedule === ", p.data().collectorId);
+
+                if (p.data().scheduledTime != 'undefined' && p.data().scheduledTime != null) {
+                  var pickupSchedule = new Date(p.data().scheduledTime.toDate());
+                  var pickupScheduleDate = moment(pickupSchedule).format('YYYY-MM-DD');
+
+                  // 4-1. Check date (pickup schedule vs work schedule)
+                  if (pickupScheduleDate == selectedDate) {
+                    // 4-2. Formatting for pickup date and time
+                    var minTime = new Date();
+                    minTime.setHours(pickupSchedule.getHours());
+                    minTime.setMinutes(pickupSchedule.getMinutes() - 14);
+                    var maxTime = new Date();
+                    maxTime.setHours(pickupSchedule.getHours());
+                    maxTime.setMinutes(pickupSchedule.getMinutes() + 14);
+
+                    if ((selectedTimeObject > minTime) && (selectedTimeObject < maxTime)) {
+                      // this collector already assigned during this time!
+                      // console.log("%%%%%%%%%%%%%%%% Your selected time is: ", moment(selectedTimeObject).format('HH:mm'));
+                      // console.log("%%%%%%%%%%%%%%%% This collector already assigned to work during this time: ", moment(minTime).format('HH:mm'), "~", moment(maxTime).format('HH:mm'));
+
+                      // remove from userList
+                      userIdList.splice(userIdList.indexOf(s.data().workerId), 1);
+                    }
+                  }
+                }
+              }
+            });
+
+
+            this.setState({ userIdList: userIdList });
+            // console.log("After set state: ", this.state.userIdList);
+
+            if(this.state.userIdList.length > 0) {
+              // console.log("this.state.userIdList[0] ", this.state.userIdList[0]);
+              db.collection('users').doc(this.state.userIdList[0]).get().then((u) => {
+                this.setState({ collectorperson: u.data().displayName, collectPersonId: u.data().uid });
+              });
+            }
+          });
+        });
+      });
+    });
+
+    // 2020-04-08 Kyungjin Jeong - Assign pickup schedule to collector 
+    // -----------------------------  End  -----------------------------
+
 
 
     var user = firebase.auth().currentUser;
@@ -187,63 +309,33 @@ export default class Scheduling extends Component {
       Alert.alert('Please Choose a Date and Time ' + this.state.userDisplayName);
     }
     else {
+      console.log("userIdList ", this.state.userIdList);
+      console.log("this.state.collectorperson ", this.state.collectorperson);
+      console.log("this.state.collectPersonId ", this.state.collectPersonId);
 
+      if(this.state.collectorperson != '' && this.state.collectPersonId != '') {
+        var clientPickUpsRef = db.collection(`users/${firebase.auth().currentUser.uid}/pickups`).doc();
+        var pickUpsRef = db.collection('pickups').doc(clientPickUpsRef.id);
 
-      var clientPickUpsRef = db.collection(`users/${firebase.auth().currentUser.uid}/pickups`).doc();
-      var pickUpsRef = db.collection('pickups').doc(clientPickUpsRef.id);
+        let batch = db.batch();
 
-      let batch = db.batch();
-
-      // write to client's pickups collection
-      batch.set(clientPickUpsRef, {
-        scheduledTime: firebase.firestore.Timestamp.fromDate(this.state.dateTimestamp),
-        additionalInfo: this.state.additionalInfo,
-        collectorName: null,
-        collectorId: null,
-        fulfilledTime: null,
-      });
-
-      // write to pickups collection
-      if (!this.state.manualEntry) {
-        console.log("SHouldnt work here");
-
-
-        batch.set(pickUpsRef, {
-          memberId: firebase.auth().currentUser.uid,
-          memberName: this.state.userDisplayName,
-          address: {
-            street: this.state.manualAddress,
-            city: this.state.manualCity,
-            province: this.state.manualProvince,
-            postalCode: this.state.manualPostalCode
-          },
-          memberProfilePicURL: this.state.userprofilePicUrl,
+        // write to client's pickups collection
+        batch.set(clientPickUpsRef, {
           scheduledTime: firebase.firestore.Timestamp.fromDate(this.state.dateTimestamp),
           additionalInfo: this.state.additionalInfo,
+          collectorName: this.state.collectorperson,
+          collectorId: this.state.collectPersonId,
           cancelled: false,
           collectorId: null,
           collectorName: null,
           fulfilledTime: null,
         });
-      }
-      else {
+
+        // write to pickups collection
+        if (!this.state.manualEntry) {
+          console.log("SHouldnt work here");
 
 
-        if (this.state.manualAddress === '') {
-          Alert.alert('Please Enter your Street ' + this.state.userDisplayName);
-        }
-        if (this.state.manualCity === '') {
-          Alert.alert('Please Enter your City ' + this.state.userDisplayName);
-        }
-        if (this.state.manualPostalCode === '') {
-          Alert.alert('Please Enter your PostalCode ' + this.state.userDisplayName);
-        }
-        if (this.state.manualProvince === '') {
-          Alert.alert('Please Enter your Province ' + this.state.userDisplayName);
-        }
-
-        else {
-          console.log("Working here");
           batch.set(pickUpsRef, {
             memberId: firebase.auth().currentUser.uid,
             memberName: this.state.userDisplayName,
@@ -260,28 +352,69 @@ export default class Scheduling extends Component {
             collectorId: null,
             collectorName: null,
             fulfilledTime: null,
-
-
           });
         }
+        else {
 
-      }
 
-      await batch.commit();
-      // var user = firebase.auth().currentUser;
-      // var userRef = db.collection(`users/${user.unpmid}/pickups`);
+          if (this.state.manualAddress === '') {
+            Alert.alert('Please Enter your Street ' + this.state.userDisplayName);
+          }
+          if (this.state.manualCity === '') {
+            Alert.alert('Please Enter your City ' + this.state.userDisplayName);
+          }
+          if (this.state.manualPostalCode === '') {
+            Alert.alert('Please Enter your PostalCode ' + this.state.userDisplayName);
+          }
+          if (this.state.manualProvince === '') {
+            Alert.alert('Please Enter your Province ' + this.state.userDisplayName);
+          }
 
-      // var pickupRef= db.collection('pickups');
+          else {
+            console.log("Working here");
+            batch.set(pickUpsRef, {
+              memberId: firebase.auth().currentUser.uid,
+              memberName: this.state.userDisplayName,
+              address: {
+                street: this.state.manualAddress,
+                city: this.state.manualCity,
+                province: this.state.manualProvince,
+                postalCode: this.state.manualPostalCode
+              },
+              memberProfilePicURL: this.state.userprofilePicUrl,
+              scheduledTime: firebase.firestore.Timestamp.fromDate(this.state.dateTimestamp),
+              additionalInfo: this.state.additionalInfo,
+              cancelled: false,
+              collectorId: this.state.collectPersonId,
+              collectorName: this.state.collectorperson,
+              fulfilledTime: null,
 
-      // var realUser= firebase.auth().currentUser.uid;
-      // var userName= firebase.auth().currentUser.displayName;
 
-      // await Promise.all ( [pickupRef.add({ user: realUser, address: this.state.address, userProfilePicURL: this.state.userprofilePicUrl, scheduledtime: this.state.chosenDate , additionalInfo: this.state.additionalInfo,cancelled: false, collectorid: this.state.collectPersonId , collector: this.state.collectorperson ,customerName: userName, fulfilledAt: null})],
-      //   [userRef.add({ scheduledtime: this.state.chosenDate, additionalInfo: this.state.additionalInfo, pickupby: this.state.collectorperson ,fulfilledtime: null})]);
+            });
+          }
 
-      //await userRef.add({ scheduledtime: this.state.chosenDate, additionalInfo: this.state.additionalInfo, pickupby: this.state.collectorperson ,fulfilledtime: null}); 
-      Alert.alert('Scheduling successful!', `Thank you ${this.state.userDisplayName}!\nWe will pick up your recycling on ${this.state.chosenDate}.`);
-      this.props.navigation.goBack(null);
+        }
+
+        await batch.commit();
+
+        // var user = firebase.auth().currentUser;
+        // var userRef = db.collection(`users/${user.unpmid}/pickups`);
+
+        // var pickupRef= db.collection('pickups');
+
+        // var realUser= firebase.auth().currentUser.uid;
+        // var userName= firebase.auth().currentUser.displayName;
+
+        // await Promise.all ( [pickupRef.add({ user: realUser, address: this.state.address, userProfilePicURL: this.state.userprofilePicUrl, scheduledtime: this.state.chosenDate , additionalInfo: this.state.additionalInfo,cancelled: false, collectorid: this.state.collectPersonId , collector: this.state.collectorperson ,customerName: userName, fulfilledAt: null})],
+        //   [userRef.add({ scheduledtime: this.state.chosenDate, additionalInfo: this.state.additionalInfo, pickupby: this.state.collectorperson ,fulfilledtime: null})]);
+
+        //await userRef.add({ scheduledtime: this.state.chosenDate, additionalInfo: this.state.additionalInfo, pickupby: this.state.collectorperson ,fulfilledtime: null}); 
+
+        Alert.alert('Scheduling successful!', `Thank you ${this.state.userDisplayName}!\nWe will pick up your recycling on ${this.state.chosenDate}.`);
+        this.props.navigation.goBack(null);
+      } else {
+        Alert.alert('Sorry, there is no collector available for your pickup!');
+      }      
     }
   }
 
@@ -322,6 +455,7 @@ export default class Scheduling extends Component {
               minimumDate={this.state.date}
               maximumDate={this.state.maxDate}
               mode={"datetime"}
+              minuteInterval={5}
 
             />
             <Text style={{ color: 'red', fontSize: 20 }}>{this.state.chosenDate}</Text>

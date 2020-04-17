@@ -3,7 +3,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 
 export default StyleSheet.create({
     second: {
-        flex: 2,
+        flex: 2
     },
     container: {
         flex: 1,
@@ -11,7 +11,7 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
     },
     menuContainer: {
         flex: 1,
@@ -36,17 +36,17 @@ export default StyleSheet.create({
         shadowOffset: { width: 5, height: 5 },
         shadowColor: "grey",
         shadowOpacity: 0.5,
-        shadowRadius: 10,
+        shadowRadius: 10
     },
     safeView: {
-        flexDirection: "column",
+        flexDirection: "column"
     },
     profileContainer: {
         alignItems: "center",
         justifyContent: "center",
         marginTop: wp('0%'),
         height: hp('30%'),
-        backgroundColor: '#AFE2FC',
+        backgroundColor: '#AFE2FC'
     },
     profileImg: {
         width: wp('22%'),
@@ -62,9 +62,6 @@ export default StyleSheet.create({
         marginTop: wp('2%'),
         color: 'dimgrey'
     },
-    DrawerComponentScrollView: {
-        // marginTop: hp('5"%'),
-    },
     menuItem: {
         justifyContent: 'center',
         alignSelf: 'center'
@@ -75,26 +72,26 @@ export default StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: "column",
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
     },
     headerContainer: {
         flexDirection: "row",
         width: wp('100%'),
         height: hp('8.4%'),
-        backgroundColor: '#87D5FA',
+        backgroundColor: '#87D5FA'
     },
     header: {
         flexDirection: "row",
         width: wp('100%'),
         height: hp('9.4%'),
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'center'
     },
     icon: {
         marginLeft: 5,
         marginRight: 8,
         marginTop: 8,
-        color: '#3897f1',
+        color: '#3897f1'
     },
     iconWrapper: {
         flex: 0.5,
@@ -119,9 +116,12 @@ export default StyleSheet.create({
         alignItems: 'center',
         width: wp('100%'),
         height: wp('10%'),
+        color: "#3973ad",
+        marginTop: wp('3%'),
+        marginBottom: wp('3%')
     },
     welcomeTxt: {
         fontSize: wp('5%'),
-        color: 'rgba(96,100,109, 1)',
+        color: "#3973ad"
     }
 })
