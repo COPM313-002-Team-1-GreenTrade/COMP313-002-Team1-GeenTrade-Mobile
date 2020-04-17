@@ -96,9 +96,10 @@ class PaymentView extends Component {
       .collection('containers')
       .add(
         {
-          amount: container.Quantity,
+          quantity: container.Quantity,
           size: container.Size,
-          orderedDate: firebase.firestore.Timestamp.now()
+          orderedDate: firebase.firestore.Timestamp.now(),
+          cost: container.Cost
         }
       )
       .then(() => {
