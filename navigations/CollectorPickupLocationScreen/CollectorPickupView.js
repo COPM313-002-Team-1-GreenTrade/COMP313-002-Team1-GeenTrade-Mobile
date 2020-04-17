@@ -24,22 +24,15 @@ export default class CollectorPickupView extends Component {
 
   componentDidMount() {
     const { navigation } = this.props;
-    // navigation.addListener('willFocus', () => {
-    //   if (this.state.requireDataUpdate) {
-    //     this.fetchData();
-    //   }
-    // });
     this.fetchData();
   }
 
   fetchData = () => {
     try {
-      //this.setState({ collectorData: []});
       let newData = [];
       var db = firebase.firestore();
-
       this.setState({ isLoading: true });
-      db.collection("pickups")
+        db.collection("pickups")
         .where("collectorId", "==", firebase.auth().currentUser.uid)
         .where("fulfilledTime", "==", null)
         .get().then((querySnapshot) => {
