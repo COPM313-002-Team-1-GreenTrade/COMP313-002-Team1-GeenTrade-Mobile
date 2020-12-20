@@ -245,7 +245,7 @@ const DrawerNavigator = createDrawerNavigator(
         LiveChatforCS: {
             screen: LivechatStack,navigationOptions: {
                 drawerLabel: "Contacts",
-                drawerIcon: <Icon type="material-community" name="chat-processing-outline" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+                drawerIcon: <Icon type="material-community" name="chat" color="#1F9AFC" iconStyle={styles.menuIcon}/>
        
             },  params: {role: ['member', 'collector']}
         },

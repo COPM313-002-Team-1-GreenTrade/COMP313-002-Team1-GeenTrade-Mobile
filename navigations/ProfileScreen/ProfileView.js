@@ -64,6 +64,7 @@ class ProfileView extends Component {
     this.props.navigation.navigate("AddressEdit");
   }
 
+
   async componentDidMount (){
         let db = firebase.firestore();
         try {
@@ -113,6 +114,9 @@ class ProfileView extends Component {
                       var phone = u.data().phone
                       this.setState({phone: phone})
                       this.props.updatePhone(this.state.phone)
+                    }
+                    else{
+                      this.props.updatePhone("")
                     }
                    
                 }
