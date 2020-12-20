@@ -47,7 +47,7 @@ export default class ContainerView extends Component {
                   id: doc.id,
                   name: container.data().name,
                   imageUrl: container.data().img_url,
-                  amount: doc.data().amount,
+                  amount: doc.data().cost,
                   orderedDate: doc.data().orderedDate
                 };
                 newData.push(containerInfo);

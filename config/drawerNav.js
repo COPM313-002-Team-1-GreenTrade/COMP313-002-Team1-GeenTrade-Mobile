@@ -16,7 +16,15 @@ import SignInView from "../navigations/SignInScreen/SignInView";
 import SignUpView from "../navigations/SignUpScreen/SignUpView";
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
 import CollectorPickupHistory from "../navigations/CollectorPickupHistory/CollectorPickupHistoryView";
-import LiveChatView from "../navigations/LiveChat/FormForCS";
+import CustomerPendingPickupsView from "../navigations/CustomerPendingPickups/CustomerPendingPickupsView";
+import CollectorPickupSelectionView from "../navigations/CollectorPickupSelection/CollectorPickupSelectionView";
+import LiveChatView from "../navigations/LiveChat/chatTest";
+import SendEmail from "../navigations/LiveChat/SendEmail";
+import IssuedList from "../navigations/LiveChat/IssuedList";
+import DetailTicketInfo from "../navigations/LiveChat/DetailTicketInfo";
+import ContactUsForm from "../navigations/LiveChat/FormForCS"
+import Confirmation from "../navigations/LiveChat/Confirmation";
+import ContactMainView from "../navigations/LiveChat/ContactMainView";
 import Scheduling from "../navigations/SchedulePickUp/Scheduling";
 import ContainerView from "../navigations/ContainerScreen/ContainerView";
 import CollectorMapView from "../navigations/CollectMapScreen/CollectorMapView";
@@ -141,6 +149,18 @@ class DrawerComponent extends Component {
 //   }
 
 // connect(mapStateToProps, mapDispatchToProps)(DrawerComponent)
+const CustomerPendingPickupsStack = createStackNavigator({
+    CustomerPickUp: CustomerPendingPickupsView
+},
+{
+    headerMode: "none"
+})
+const CollectorPickupSelectionStack = createStackNavigator({
+    CollectorPickupSelection: CollectorPickupSelectionView
+},
+{
+    headerMode: "none", 
+})
 
 const CollectorPickupStack = createStackNavigator({
     CollectorPickup: CollectorPickupView,
@@ -158,12 +178,7 @@ const ContainerPurchaseStack = createStackNavigator({
     headerMode: "none", //Hide the back button react navigation
 });
 
-const LivechatStack = createStackNavigator({
-    LiveChat: LiveChatView,
-},
-{
-    headerMode: "none",
-});
+
 
 const ProfileStack = createStackNavigator({
     Profile: ProfileView,
@@ -175,6 +190,19 @@ const ProfileStack = createStackNavigator({
 {
     headerMode: "none",
     initialRouteName: 'Profile'},
+)
+const LivechatStack = createStackNavigator({
+    LiveChat: LiveChatView,
+    ContactUsForm: ContactUsForm,
+    Confirmation: Confirmation,
+    ContactMainView:ContactMainView,
+    IssuedList: IssuedList,
+    DetailTicketInfo: DetailTicketInfo,
+    SendEmail:SendEmail
+},
+{
+    headerMode: "none",
+    initialRouteName: 'ContactMainView'},
 )
 
 const WorkScheduleStack = createStackNavigator({
@@ -202,7 +230,14 @@ const DrawerNavigator = createDrawerNavigator(
             
              },
              params: {role: ['member', 'collector']}
-         },
+         },      
+         PickupSelection: {
+            screen: CollectorPickupSelectionStack, navigationOptions: {
+                drawerLabel: "Select Pickup",
+                drawerIcon: <Icon type="material-community" name="cellphone" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+            },
+            params: {role: ['collector']}
+        },
         Pickup: {
             screen: CollectorPickupStack, navigationOptions: {
                 drawerLabel: "Track Pickups",
@@ -224,14 +259,14 @@ const DrawerNavigator = createDrawerNavigator(
                 drawerLabel: "Purchase Container(s)",
                 drawerIcon: <Icon type="material-community" name="shopping" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
-            params:  {role: ['member', 'collector']}
+            params:  {role: ['member']}
         },
         Containers: {
             screen: ContainerView, navigationOptions: {
                 drawerLabel: "Containers",
                 drawerIcon: <Icon type="material-community" name="trash-can-outline" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
-            params:  {role: ['member', 'collector']}
+            params:  {role: ['member']}
         },
         SchedulePickup: {
             screen: Scheduling, navigationOptions: {
@@ -240,6 +275,13 @@ const DrawerNavigator = createDrawerNavigator(
             },
             params:  {role: ['member', 'collector']}
         },
+        CustomerPendingPickups: {
+            screen: CustomerPendingPickupsStack, navigationOptions: {
+                drawerLabel: "Pending Pickups",
+                drawerIcon: <Icon type="material-community" name="car" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+            },
+            params:  {role: ['member']}
+        },
 
 
         LiveChatforCS: {
@@ -247,7 +289,7 @@ const DrawerNavigator = createDrawerNavigator(
                 drawerLabel: "Contacts",
                 drawerIcon: <Icon type="material-community" name="chat" color="#1F9AFC" iconStyle={styles.menuIcon}/>
        
-            },  params: {role: ['member', 'collector']}
+            },  params: {role: ['member']}
         },
 
         WorkSchedule: {

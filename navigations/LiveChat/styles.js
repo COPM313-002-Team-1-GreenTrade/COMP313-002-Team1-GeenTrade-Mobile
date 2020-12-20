@@ -8,6 +8,15 @@ export default StyleSheet.create({
         flexDirection: "column",
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     },
+    scrollView: {
+      backgroundColor: 'pink',
+      marginHorizontal: 20,
+    },
+   
+    container1: {
+      flex: 1,
+      paddingBottom: 22
+     },
     headerContainer: {
         flexDirection: "row",
         width: wp('100%'),
@@ -21,6 +30,11 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    avatar: {
+      width: wp('22%'),
+      height: wp('22%'),
+      borderRadius: wp('11%'),
+  },
     iconWrapper: {
         flex: 0.5,
     },
@@ -29,7 +43,7 @@ export default StyleSheet.create({
     },
     textTitle: {
         fontSize: wp('5%'),
-        marginLeft: wp('23%'),
+        marginLeft: wp('15%'),
         color: "#fff"
     },
     main: {
@@ -40,8 +54,14 @@ export default StyleSheet.create({
       
     },
     title: {
-      marginBottom: 20,
+      marginBottom: 5,
+      fontSize: 20,
+      textAlign: 'left'
+    },
+    title1: {
+      marginBottom: 40,
       fontSize: 25,
+      fontFamily: 'Cochin',
       textAlign: 'center'
     },
     itemInput: {
@@ -50,6 +70,17 @@ export default StyleSheet.create({
       marginRight: 5,
       marginBottom:7,
       fontSize: 23,
+      borderWidth: 1,
+      borderColor: 'black',
+      borderRadius: 8,
+      color: 'blue'
+    },
+    itemInputforDescription: {
+      height: 80,
+      padding: 4,
+      marginRight: 5,
+      marginBottom:7,
+      fontSize: 17,
       borderWidth: 1,
       borderColor: 'black',
       borderRadius: 8,

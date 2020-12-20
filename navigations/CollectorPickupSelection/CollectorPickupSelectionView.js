@@ -6,13 +6,10 @@ import 'firebase/firestore';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
 import firebaseConfig from '../../config/FireBaseConfig';
 import firebase from '../../config/firebase';
-import moment from 'moment';
 import SlideListItem, { Separator } from "./SlideListItem";
-import * as ImagePicker from 'expo-image-picker';
-import * as Permissions from 'expo-permissions';
 import uuid from 'uuid';
 
-export default class CollectorPickupView extends Component {
+export default class CollectorPickupSelectionView extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -31,10 +28,12 @@ export default class CollectorPickupView extends Component {
     try {
       let newData = [];
       var db = firebase.firestore();
+
       this.setState({ isLoading: true });
-        db.collection("pickups")
-        .where("collectorId", "==", firebase.auth().currentUser.uid)
+      db.collection("pickups")
+        .where("collectorId", "==", null)
         .where("fulfilledTime", "==", null)
+        .where("cancelled", "==", false)
         .get().then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
             var pickupInfo = {
@@ -57,119 +56,47 @@ export default class CollectorPickupView extends Component {
     catch (error) {
       console.log(error);
     }
-  }
-
+  }  
+  
   toggleMap = (item) => {
     this.props.navigation.navigate("CollectorMap", { address: item.address, notes: item.notes });
   }
 
-  archivePickup = async (item) => {
-    await Permissions.askAsync(Permissions.CAMERA);
-    let cameraPhoto = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-    });
-    await this.processPickupPhoto(cameraPhoto, item);
+  addPickup = async (item) => {
+    await this.updatePickupToDB(item);
   }
 
-  processPickupPhoto = async (photo, item) => {
-    this.setState({ uploadingPhoto: true });
-    try {
-      let storageImageUri = await this.uploadImageAsync(photo.uri);
-      await this.savePickupToDB(storageImageUri, item);
-    }
-    catch(error) {
-      console.log(error);
-    }
-    finally {
-      this.setState({ uploadingPhoto: false });
-      this.fetchData();
-    }
-  }
-
-  savePickupToDB = async (uri, item) => {
+  updatePickupToDB = async (item) => {
     let db = firebase.firestore();
-    let totalEstimatedPoints = 0;
-
-    await db.collection('recycled-items')
-      .where('userId', '==', item.userId)
-      .where('collected', '==', false)
-      .get()
-      .then((snapshots) => {
-        snapshots.forEach((doc) => {
-          totalEstimatedPoints += doc.data().estimatedPoints;
-          db.collection('recycled-items').doc(doc.id).update({ collected: true });
-        });
-      });
-
     let batch = db.batch();
     let currentTime = firebase.firestore.FieldValue.serverTimestamp();
-
-    // Add to completed-pickups
-    let completedRef = db.collection('completed-pickups')
-      .doc(firebase.auth().currentUser.uid)
-      .collection('pickups')
-      .doc(item.id);
-    batch.set(completedRef, { 
-      fulfilledTime: currentTime, 
-      imageUri: uri, 
-      address: {
-        street: item.address.street,
-        city: item.address.city,
-        province: item.address.province,
-        postalCode: item.address.postalCode,
-      },
-      memberNotes: item.notes,
-    });
 
     // Update pickups in client collection
     let clientPickupsRef = db.collection('users')
       .doc(item.userId)
       .collection('pickups')
       .doc(item.id);
-    batch.update(clientPickupsRef, { fulfilledTime: currentTime });
+    batch.update(clientPickupsRef, { 
+      collectorId: firebase.auth().currentUser.uid, 
+      collectorName: firebase.auth().currentUser.displayName
+     });
 
     // Update pickups in pickups collection
     let pickupsRef = db.collection('pickups')
       .doc(item.id);
-    batch.update(pickupsRef, { fulfilledTime: currentTime });
-
-    // Update client points
-    let clientRef = db.collection('users')
-      .doc(item.userId);
-    batch.update(clientRef, { points: firebase.firestore.FieldValue.increment(totalEstimatedPoints)});
-
-    await batch.commit();
-  }
-
-  uploadImageAsync = async (uri) => {
-    const blob = await new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.onload = function () {
-        resolve(xhr.response);
-      };
-      xhr.onerror = function (e) {
-        console.log(e);
-        reject(new TypeError('Network request failed'));
-      };
-      xhr.responseType = 'blob';
-      xhr.open('GET', uri, true);
-      xhr.send(null);
+    batch.update(pickupsRef, { 
+      collectorId: firebase.auth().currentUser.uid, 
+      collectorName: firebase.auth().currentUser.displayName
     });
 
-    const ref = firebase
-      .storage()
-      .ref()
-      .child(uuid.v4());
-    await ref.put(blob);
-    blob.close();
-    return await ref.getDownloadURL();
+    await batch.commit();
   }
 
   renderItem = ({ item }) => (
     <SlideListItem
       item={item}
       onLeftPress={() => { this.toggleMap(item) }}
-      onRightPress={() => {  this.archivePickup(item) }}
+      onRightPress={() => {  this.addPickup(item) }}
     />
   );
 
@@ -178,8 +105,6 @@ export default class CollectorPickupView extends Component {
       <Text style={styles.displayMessage}>No Pickups Found.</Text>
     );
   }
-
-  
 
   render() {
     return (
@@ -198,7 +123,7 @@ export default class CollectorPickupView extends Component {
 							</TouchableWithoutFeedback>
             </View>
             <View style={styles.titleWrapper}>
-              <Text style={styles.textTitle}>Track Pickups</Text>
+              <Text style={styles.textTitle}>Select Available Pickups</Text>
             </View>
           </View>
         </View>

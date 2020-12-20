@@ -1,80 +1,49 @@
-import PubNubReact from "pubnub-react";
 import React, { Component } from "react";
-import { StyleSheet } from "react-native";
-import { GiftedChat } from "react-native-gifted-chat";
+import PubNubReact from "pubnub-react";
 
 export default class chatTest extends Component {
+   
   constructor(props) {
     super(props);
-    this.state = {
-      messages: [],
-      history: [],
-    };
-    this.id = this.randomid();
     this.pubnub = new PubNubReact({
-      publishKey: "pub-c-f52924a6-11d1-414a-bcc9-411899a66a19",
-      subscribeKey: "sub-c-505014c6-5a93-11ea-b451-9a833ea0503a",
-    });
+      publishKey: 'pub-c-f52924a6-11d1-414a-bcc9-411899a66a19', 
+      subscribeKey: 'sub-c-505014c6-5a93-11ea-b451-9a833ea0503a'
+     });
     this.pubnub.init(this);
-  }
+    }
 
-  componentWillMount() {
+componentWillMount() {
     this.pubnub.subscribe({
-      channels: ["ReactChat"],
-      message: message => console.log("sub", message),
+        channels: ['channel1'],
+        withPresence: true
     });
 
-    this.pubnub.getMessage("ReactChat", m => {
-      this.setState(previousState => ({
-        messages: GiftedChat.append(previousState.messages, m["message"]),
-      }));
+    this.pubnub.getMessage('channel1', (msg) => {
+        console.log(msg);
     });
-  }
-  onSend(messages = []) {
-    // this.setState(previousState => ({
-    //   messages: GiftedChat.append(previousState.messages, messages),
-    // }));
-    console.log("49", messages);
-    this.pubnub.publish({
-      message: messages,
-      channel: "ReactChat",
-    });
-  }
-  randomid = () => {
-    return Math.floor(Math.random() * 100);
-  };
-  componentWillUnmount() {
-    this.pubnub.unsubscribe({ channels: ["ReactChat"] });
-  }
 
-  render() {
-    return (
-      <GiftedChat
-        messages={this.state.messages}
-        onSend={messages => this.onSend(messages)}
-        user={{
-          _id: this.id,
-        }}
-      />
-    );
-  }
+    this.pubnub.getStatus((st) => {
+        this.pubnub.publish({
+            message: 'hello world from react',
+            channel: 'channel1'
+        });
+    });
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF",
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: "center",
-    margin: 10,
-  },
-  instructions: {
-    textAlign: "center",
-    color: "#333333",
-    marginBottom: 5,
-  },
-});
+componentWillUnmount() {
+    this.pubnub.unsubscribe({
+        channels: ['channel1']
+    });
+}
+
+render() {
+    const messages = this.pubnub.getMessage('channel1');
+    return (
+        <div>
+            <ul>
+                {messages.map((m, index) => <li key={'message' + index}>{m.message}</li>)}
+            </ul>
+        </div>
+    );
+}
+}
