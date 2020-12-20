@@ -13,7 +13,6 @@ import * as Animatable from 'react-native-animatable';
 import email from 'react-native-email'
 import styles from "./style1";
 import firebase from '../../config/firebase'
-import { fetchUpdateAsync } from 'expo/build/Updates/Updates';
 
 export default class Confirmation extends Component {
     constructor(props) {

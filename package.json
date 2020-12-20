@@ -25,7 +25,7 @@
     "pubnub-react": "^2.0.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.0.tar.gz",
+    "react-native": "^0.63.2",
     "react-native-calendars": "^1.263.0",
     "react-native-credit-card-input": "^0.4.1",
     "react-native-elements": "^1.2.0",

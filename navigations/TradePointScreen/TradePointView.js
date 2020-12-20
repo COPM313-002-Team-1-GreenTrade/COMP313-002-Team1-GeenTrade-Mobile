@@ -5,7 +5,7 @@ import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
 import firebase from "../../config/firebase";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
-import { fetchUpdateAsync } from "expo/build/Updates/Updates";
+// import { fetchUpdateAsync } from "expo/build/Updates/Updates";
 
 export default class TradePointlView extends Component {
   constructor(props) {
